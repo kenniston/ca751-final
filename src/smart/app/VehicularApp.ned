@@ -23,40 +23,18 @@
 // @version 1.0
 //
 
-#ifndef SMART_APP_SMARTAPPLAYERMAC1609_H_
-#define SMART_APP_SMARTAPPLAYERMAC1609_H_
+package smart.app;
 
-#include "veins/base/utils/NetwToMacControlInfo.h"
-#include "veins/modules/utility/Consts80211p.h"
-
-namespace veins {
-
-    /**
-     * @brief
-     * Interface between SmartAppLayer and Mac1609_4
-     *
-     * @author Kenniston Arraes Bonfim
-     *
-     * @ingroup macLayer
-     */
-    class VEINS_API SmartAppLayerMac1609 {
-    public:
-        virtual bool isChannelSwitchingActive() = 0;
-
-        virtual simtime_t getSwitchingInterval() = 0;
-
-        virtual bool isCurrentChannelCCH() = 0;
-
-        virtual void changeServiceChannel(Channel channelNumber) = 0;
-
-        virtual ~SmartAppLayerMac1609(){};
-
-        /**
-         * @brief Returns the MAC address of this MAC module.
-         */
-        virtual const LAddress::L2Type& getMACAddress() = 0;
-    };
-
-} // namespace veins
-
-#endif /* SMART_APP_SMARTAPPLAYERMAC1609_H_ */
+//
+// Vehicular application.
+//
+// @author Kenniston Arraes Bonfim
+//
+// Network description for Vehicular application.
+//
+simple VehicularApp extends VehicularAppLayer {
+    
+    @class(VehicularApp);
+    string appName = default("Kenniston Veins App");
+    
+}

@@ -23,52 +23,45 @@
 // @version 1.0
 //
 
-#ifndef APP_SMARTAPPLAYER_H_
-#define APP_SMARTAPPLAYER_H_
+#ifndef APP_VEHICULARAPPLAYER_H_
+#define APP_VEHICULARAPPLAYER_H_
 
 #include <map>
 
-#include "SmartAppLayerMac1609.h"
 #include "../messages/BasicSafetyMessage_m.h"
+#include "../messages/ServiceAdvertisement_m.h"
 #include "veins/base/modules/BaseApplLayer.h"
 #include "veins/modules/utility/Consts80211p.h"
 #include "veins/modules/messages/BaseFrame1609_4_m.h"
 #include "veins/base/connectionManager/ChannelAccess.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
-#include "veins/modules/messages/DemoServiceAdvertisement_m.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
-#include "veins/modules/mac/ieee80211p/DemoBaseApplLayerToMac1609_4Interface.h"
+#include "VehicularAppLayerMac1609.h"
 
 namespace veins {
 
-    using veins::AnnotationManager;
-    using veins::AnnotationManagerAccess;
-    using veins::TraCICommandInterface;
-    using veins::TraCIMobility;
-    using veins::TraCIMobilityAccess;
-
     /**
      * @brief
-     * Smart Application Layer class.
+     * Vehicular Application Layer class.
      *
      * @author Kenniston Arraes Bonfim
      *
      * @ingroup applLayer
      *
-     * @see SmartApplLayer
+     * @see VehicularApplLayer
      * @see Mac1609_4
      * @see PhyLayer80211p
      * @see Decider80211p
      */
-    class VEINS_API SmartAppLayer : public BaseApplLayer {
+    class VEINS_API VehicularAppLayer : public BaseApplLayer {
     public:
-        ~SmartAppLayer() override;
+        ~VehicularAppLayer() override;
         void initialize(int stage) override;
         void finish() override;
 
         void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details) override;
 
-        enum SmartMessageKinds {
+        enum VehicularMessageKinds {
             SEND_BEACON_EVT,
             SEND_WSA_EVT
         };
@@ -85,11 +78,11 @@ namespace veins {
         /** @brief this function is called upon receiving a BaseFrame1609_4 */
         virtual void onWSM(BaseFrame1609_4* wsm){};
 
-        /** @brief this function is called upon receiving a DemoSafetyMessage, also referred to as a beacon  */
+        /** @brief this function is called upon receiving a BasicSafetyMessage, also referred to as a beacon  */
         virtual void onBSM(BasicSafetyMessage* bsm){};
 
-        /** @brief this function is called upon receiving a DemoServiceAdvertisement */
-        virtual void onWSA(DemoServiceAdvertisment* wsa){};
+        /** @brief this function is called upon receiving a ServiceAdvertisment */
+        virtual void onWSA(ServiceAdvertisment* wsa){};
 
         /** @brief this function is called every time the vehicle receives a position update signal */
         virtual void handlePositionUpdate(cObject* obj);
@@ -144,7 +137,7 @@ namespace veins {
         TraCICommandInterface::Vehicle* traciVehicle;
 
         AnnotationManager* annotations;
-        SmartAppLayerMac1609* mac;
+        VehicularAppLayerMac1609* mac;
 
         /* support for parking currently only works with TraCI */
         bool isParked;
@@ -188,4 +181,4 @@ namespace veins {
 } // namespace veins
 
 
-#endif /* APP_SMARTAPPLAYER_H_ */
+#endif /* APP_VEHICULARAPPLAYER_H_ */

@@ -23,26 +23,11 @@
 // @version 1.0
 //
 
-import veins.base.utils.Coord;
-import veins.base.utils.SimpleAddress;
-import veins.modules.messages.BaseFrame1609_4;
+#include <omnetpp.h>
+#include "VehicularApp.h"
 
-namespace veins;
+namespace veins {
 
-class BasicSafetyMessage extends BaseFrame1609_4 {
-    Coord senderPos;
-    Coord senderPosConfidence;
-    Coord senderSpeed;
-    Coord senderSpeedConfidence;
-    Coord senderHeading;
-    Coord senderHeadingConfidence;
-    Coord senderAccel;
-    Coord senderAccelConfidence;
-    double senderWidth;
-    double senderLength;
-    int senderMbType;
-    int senderAttackType;
-    Coord senderGpsCoordinates;
-    LAddress::L2Type senderRealId;
-    unsigned long senderPseudonym;
-}
+    using namespace omnetpp;
+
+} // namespace smart

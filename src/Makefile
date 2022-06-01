@@ -34,8 +34,8 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc, .msg and .sm files
 OBJS = \
-    $O/smart/app/SmartApp.o \
-    $O/smart/app/SmartAppLayer.o \
+    $O/smart/app/VehicularApp.o \
+    $O/smart/app/VehicularAppLayer.o \
     $O/veins_inet/VeinsInetApplicationBase.o \
     $O/veins_inet/VeinsInetManager.o \
     $O/veins_inet/VeinsInetManagerBase.o \
@@ -43,11 +43,13 @@ OBJS = \
     $O/veins_inet/VeinsInetMobility.o \
     $O/veins_inet/VeinsInetSampleApplication.o \
     $O/smart/messages/BasicSafetyMessage_m.o \
+    $O/smart/messages/ServiceAdvertisement_m.o \
     $O/veins_inet/VeinsInetSampleMessage_m.o
 
 # Message files
 MSGFILES = \
     smart/messages/BasicSafetyMessage.msg \
+    smart/messages/ServiceAdvertisement.msg \
     veins_inet/VeinsInetSampleMessage.msg
 
 # SM files

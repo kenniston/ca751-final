@@ -28,18 +28,18 @@ package smart.app;
 import org.car2x.veins.base.modules.IBaseApplLayer;
 
 //
-// SMART application layer base class.
+// Vehicular application layer base class.
 //
 // @author Kenniston Arraes Bonfim
 //
-// @see SmartApplLayer
+// @see VehicularAppLayer
 // @see Nic80211p
 // @see Mac1609_4
 // @see PhyLayer80211p
 //
-simple SmartAppLayer like IBaseApplLayer {
+simple VehicularAppLayer like IBaseApplLayer {
     parameters:
-        @class(veins::SmartAppLayer);
+        @class(smart::VehicularAppLayer);
         int headerLength = default(88bit) @unit(bit); //header length of the application
 
         bool sendBeacons = default(true); //tell the applayer to periodically send beacons

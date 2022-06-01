@@ -19,22 +19,15 @@
 //
 // @author  Kenniston Arraes Bonfim
 // @email   kenniston@gmail.com
-// @date    31/05/2022
+// @date    01/06/2022
 // @version 1.0
 //
 
-package smart.app;
+import veins.modules.messages.BaseFrame1609_4;
 
-//
-// SMART application.
-//
-// @author Kenniston Arraes Bonfim
-//
-// Network description for SMART application.
-//
-simple SmartApp extends SmartAppLayer {
-    
-    @class(SmartApp);
-    string appName = default("Joseph Mb Veins App");
-    
+namespace veins;
+
+packet ServiceAdvertisment extends veins::BaseFrame1609_4 {
+    int targetChannel;
+    string serviceDescription;
 }

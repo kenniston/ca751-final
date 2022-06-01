@@ -23,8 +23,19 @@
 // @version 1.0
 //
 
-#include <omnetpp.h>
-#include "SmartApp.h"
+#ifndef APP_VEHICULARAPP_H_
+#define APP_VEHICULARAPP_H_
 
-using namespace omnetpp;
-using namespace veins;
+#include <omnetpp.h>
+
+#include "VehicularAppLayer.h"
+
+namespace veins {
+    using namespace omnetpp;
+
+    class VehicularApp: public VehicularAppLayer {
+
+    };
+} // namespace veins
+
+#endif /* APP_VEHICULARAPP_H_ */

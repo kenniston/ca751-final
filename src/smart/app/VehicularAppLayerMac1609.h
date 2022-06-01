@@ -23,18 +23,39 @@
 // @version 1.0
 //
 
-#ifndef APP_SMARTAPP_H_
-#define APP_SMARTAPP_H_
+#ifndef APP_VEHICULARAPPLAYERMAC1609_H_
+#define APP_VEHICULARAPPLAYERMAC1609_H_
 
+#include "veins/modules/utility/Consts80211p.h"
 
-#include <omnetpp.h>
-#include "SmartAppLayer.h"
+namespace veins {
 
-using namespace omnetpp;
-using namespace veins;
+    /**
+     * @brief
+     * Interface between VehicularAppLayer and Mac1609_4
+     *
+     * @author Kenniston Arraes Bonfim
+     *
+     * @ingroup macLayer
+     */
+    class VEINS_API VehicularAppLayerMac1609 {
+    public:
+        virtual bool isChannelSwitchingActive() = 0;
 
-class SmartApp: public SmartAppLayer {
+        virtual simtime_t getSwitchingInterval() = 0;
 
-};
+        virtual bool isCurrentChannelCCH() = 0;
 
-#endif /* APP_SMARTAPP_H_ */
+        virtual void changeServiceChannel(veins::Channel channelNumber) = 0;
+
+        virtual ~VehicularAppLayerMac1609(){};
+
+        /**
+         * @brief Returns the MAC address of this MAC module.
+         */
+        virtual const veins::LAddress::L2Type& getMACAddress() = 0;
+    };
+
+} // namespace veins
+
+#endif /* APP_VEHICULARAPPLAYERMAC1609_H_ */
