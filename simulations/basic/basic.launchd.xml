@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+    <copy file="basic.net.xml" />
+    <copy file="basic.rou.xml" />
+    <copy file="basic.add.xml" />
+    <copy file="basic.sumo.cfg" type="config" />
+</launch>
