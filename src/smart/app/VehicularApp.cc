@@ -30,4 +30,4 @@ namespace veins {
 
     using namespace omnetpp;
 
-} // namespace smart
+} // namespace veins
