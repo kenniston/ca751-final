@@ -23,29 +23,40 @@
 // @version 1.0
 //
 
-#include <omnetpp.h>
-#include "VehicularApp.h"
+#ifndef APP_VEHICULARAPPLAYERMAC1609_4_H_
+#define APP_VEHICULARAPPLAYERMAC1609_4_H_
 
-Define_Module(VehicularApp);
+#include "veins/base/utils/SimpleAddress.h"
+#include "veins/modules/utility/Consts80211p.h"
 
-void VehicularApp::initialize(int stage)
-{
-    VehicularAppLayer::initialize(stage);
+namespace veins {
 
-    if (stage == 0) {
-        // Framework init
-    } else if (stage == 1) {
-        EV << "Initializing " << par("appName").stringValue() << std::endl;
+    /**
+     * @brief
+     * Interface between VehicularAppLayer and Mac1609_4
+     *
+     * @author Kenniston Arraes Bonfim
+     *
+     * @ingroup macLayer
+     */
+    class VEINS_API VehicularAppLayerMac1609_4 {
+    public:
+        virtual bool isChannelSwitchingActive() = 0;
 
-        myVType = traciVehicle->getVType();
+        virtual simtime_t getSwitchingInterval() = 0;
 
-        // Change vehicle color in Sumo simulation
-        traciVehicle->setColor(TraCIColor(255, 0, 0, 255));
-    }
-}
+        virtual bool isCurrentChannelCCH() = 0;
 
-void VehicularApp::finish()
-{
-    VehicularAppLayer::finish();
-}
+        virtual void changeServiceChannel(veins::Channel channelNumber) = 0;
 
+        virtual ~VehicularAppLayerMac1609_4(){};
+
+        /**
+         * @brief Returns the MAC address of this MAC module.
+         */
+        virtual const LAddress::L2Type& getMACAddress() = 0;
+    };
+
+} // namespace veins
+
+#endif /* APP_VEHICULARAPPLAYERMAC1609_4_H_ */

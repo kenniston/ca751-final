@@ -30,13 +30,14 @@
 
 #include "../messages/BasicSafetyMessage_m.h"
 #include "../messages/ServiceAdvertisement_m.h"
+
 #include "veins/base/modules/BaseApplLayer.h"
 #include "veins/modules/utility/Consts80211p.h"
 #include "veins/modules/messages/BaseFrame1609_4_m.h"
 #include "veins/base/connectionManager/ChannelAccess.h"
 #include "veins/modules/mobility/traci/TraCIMobility.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
-#include "VehicularAppLayerMac1609.h"
+#include "veins/modules/mac/ieee80211p/DemoBaseApplLayerToMac1609_4Interface.h"
 
 namespace veins {
 
@@ -137,7 +138,7 @@ namespace veins {
         TraCICommandInterface::Vehicle* traciVehicle;
 
         AnnotationManager* annotations;
-        VehicularAppLayerMac1609* mac;
+        DemoBaseApplLayerToMac1609_4Interface* mac;
 
         /* support for parking currently only works with TraCI */
         bool isParked;

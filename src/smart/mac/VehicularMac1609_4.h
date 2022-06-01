@@ -19,43 +19,30 @@
 //
 // @author  Kenniston Arraes Bonfim
 // @email   kenniston@gmail.com
-// @date    31/05/2022
+// @date    01/06/2022
 // @version 1.0
 //
 
-#ifndef APP_VEHICULARAPPLAYERMAC1609_H_
-#define APP_VEHICULARAPPLAYERMAC1609_H_
+#ifndef APP_MAC_VEHICULARMAC1609_4_H_
+#define APP_MAC_VEHICULARMAC1609_4_H_
 
-#include "veins/modules/utility/Consts80211p.h"
+#include "VehicularAppLayerMac1609_4.h"
+#include "veins/modules/mac/ieee80211p/Mac1609_4.h"
 
 namespace veins {
 
     /**
      * @brief
-     * Interface between VehicularAppLayer and Mac1609_4
+     * Interface for Veins Mac1609_4
      *
      * @author Kenniston Arraes Bonfim
      *
      * @ingroup macLayer
      */
-    class VEINS_API VehicularAppLayerMac1609 {
-    public:
-        virtual bool isChannelSwitchingActive() = 0;
+    class VEINS_API VehicularMac1609_4 : public Mac1609_4, public VehicularAppLayerMac1609_4 {
 
-        virtual simtime_t getSwitchingInterval() = 0;
-
-        virtual bool isCurrentChannelCCH() = 0;
-
-        virtual void changeServiceChannel(veins::Channel channelNumber) = 0;
-
-        virtual ~VehicularAppLayerMac1609(){};
-
-        /**
-         * @brief Returns the MAC address of this MAC module.
-         */
-        virtual const veins::LAddress::L2Type& getMACAddress() = 0;
     };
 
 } // namespace veins
 
-#endif /* APP_VEHICULARAPPLAYERMAC1609_H_ */
+#endif /* APP_MAC_VEHICULARMAC1609_4_H_ */

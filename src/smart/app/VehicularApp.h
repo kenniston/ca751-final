@@ -30,12 +30,15 @@
 
 #include "VehicularAppLayer.h"
 
-namespace veins {
-    using namespace omnetpp;
+using namespace veins;
+using namespace omnetpp;
 
-    class VehicularApp: public VehicularAppLayer {
-
-    };
-} // namespace veins
+class VehicularApp: public VehicularAppLayer {
+public:
+    virtual void initialize(int stage);
+    virtual void finish();
+protected:
+    std::string myVType;
+};
 
 #endif /* APP_VEHICULARAPP_H_ */

@@ -46,7 +46,7 @@ namespace veins {
             annotations = AnnotationManagerAccess().getIfExists();
             ASSERT(annotations);
 
-            mac = FindModule<VehicularAppLayerMac1609*>::findSubModule(getParentModule());
+            mac = FindModule<DemoBaseApplLayerToMac1609_4Interface*>::findSubModule(getParentModule());
             ASSERT(mac);
 
             // read parameters

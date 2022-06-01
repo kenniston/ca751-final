@@ -19,33 +19,12 @@
 //
 // @author  Kenniston Arraes Bonfim
 // @email   kenniston@gmail.com
-// @date    31/05/2022
+// @date    01/06/2022
 // @version 1.0
 //
 
-#include <omnetpp.h>
-#include "VehicularApp.h"
+#include "VehicularMac1609_4.h"
 
-Define_Module(VehicularApp);
+namespace veins {
 
-void VehicularApp::initialize(int stage)
-{
-    VehicularAppLayer::initialize(stage);
-
-    if (stage == 0) {
-        // Framework init
-    } else if (stage == 1) {
-        EV << "Initializing " << par("appName").stringValue() << std::endl;
-
-        myVType = traciVehicle->getVType();
-
-        // Change vehicle color in Sumo simulation
-        traciVehicle->setColor(TraCIColor(255, 0, 0, 255));
-    }
-}
-
-void VehicularApp::finish()
-{
-    VehicularAppLayer::finish();
-}
-
+} // namespace veins

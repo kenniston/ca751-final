@@ -36,6 +36,7 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 OBJS = \
     $O/smart/app/VehicularApp.o \
     $O/smart/app/VehicularAppLayer.o \
+    $O/smart/mac/VehicularMac1610_4.o \
     $O/veins_inet/VeinsInetApplicationBase.o \
     $O/veins_inet/VeinsInetManager.o \
     $O/veins_inet/VeinsInetManagerBase.o \
