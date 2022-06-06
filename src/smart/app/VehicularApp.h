@@ -33,12 +33,30 @@
 using namespace veins;
 using namespace omnetpp;
 
-class VehicularApp: public VehicularAppLayer {
+/**
+ * @brief
+ * Vehicular application for misbehavior detection.
+ * Most common functions are overloaded.
+ * See VehicularApp.cc for hints
+ *
+ * @author Kenniston Arraes Bonfim
+ *
+ */
+class VEINS_API VehicularApp: public VehicularAppLayer {
 public:
-    virtual void initialize(int stage);
-    virtual void finish();
+    void initialize(int stage) override;
+    void finish() override;
+
 protected:
     std::string myVType;
+    bool hasStopped;
+
+    void onBSM(BasicSafetyMessage* bsm) override;
+    void onWSM(BaseFrame1609_4* wsm) override;
+    void onWSA(ServiceAdvertisment* wsa) override;
+
+    void handleSelfMsg(cMessage* msg) override;
+    void handlePositionUpdate(cObject* obj) override;
 };
 
 #endif /* APP_VEHICULARAPP_H_ */

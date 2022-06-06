@@ -34,8 +34,9 @@ void VehicularApp::initialize(int stage)
 
     if (stage == 0) {
         // Framework init
-    } else if (stage == 1) {
         EV << "Initializing " << par("appName").stringValue() << std::endl;
+    } else if (stage == 1) {
+        EV << par("appName").stringValue() << " initialized! Loading settings..." << std::endl;
 
         myVType = traciVehicle->getVType();
 
@@ -49,3 +50,43 @@ void VehicularApp::finish()
     VehicularAppLayer::finish();
 }
 
+void VehicularApp::onBSM(BasicSafetyMessage* bsm)
+{
+    // Your application has received a beacon message from another car or RSU
+    // code for handling the message goes here
+    if (!hasStopped) {
+        traciVehicle->setSpeedMode(0x1f);
+        traciVehicle->setSpeed(0);
+        hasStopped = true;
+    } else {
+        traciVehicle->setSpeedMode(0x1f);
+        traciVehicle->setSpeed(20);
+        hasStopped = false;
+    }
+}
+
+void VehicularApp::onWSM(BaseFrame1609_4* wsm)
+{
+    // Your application has received a data message from another car or RSU
+    // code for handling the message goes here, see TraciDemo11p.cc for examples
+}
+
+void VehicularApp::onWSA(ServiceAdvertisment* wsa)
+{
+    // Your application has received a service advertisement from another car or RSU
+    // code for handling the message goes here, see TraciDemo11p.cc for examples
+}
+
+void VehicularApp::handleSelfMsg(cMessage* msg)
+{
+    VehicularAppLayer::handleSelfMsg(msg);
+    // this method is for self messages (mostly timers)
+    // it is important to call the DemoBaseApplLayer function for BSM and WSM transmission
+}
+
+void VehicularApp::handlePositionUpdate(cObject* obj)
+{
+    VehicularAppLayer::handlePositionUpdate(obj);
+    // the vehicle has moved. Code that reacts to new positions goes here.
+    // member variables such as currentPosition and currentSpeed are updated in the parent class
+}

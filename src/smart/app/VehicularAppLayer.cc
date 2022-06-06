@@ -202,7 +202,6 @@ namespace veins {
 
     void VehicularAppLayer::handleLowerMsg(cMessage* msg)
     {
-
         BaseFrame1609_4* wsm = dynamic_cast<BaseFrame1609_4*>(msg);
         ASSERT(wsm);
 
