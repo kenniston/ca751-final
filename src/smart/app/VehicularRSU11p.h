@@ -19,21 +19,33 @@
 //
 // @author  Kenniston Arraes Bonfim
 // @email   kenniston@gmail.com
-// @date    31/05/2022
+// @date    06/06/2022
 // @version 1.0
 //
 
-package smart.app;
+#ifndef APP_VEHICULARRSU11P_H_
+#define APP_VEHICULARRSU11P_H_
 
-//
-// Vehicular application.
-//
-// @author Kenniston Arraes Bonfim
-//
-// Network description for Vehicular application.
-//
-simple VehicularApp extends VehicularAppLayer
-{
-    @class(VehicularApp);
-    string appName = default("Kenniston Veins App");
-}
+#include <omnetpp.h>
+
+#include "VehicularAppLayer.h"
+
+using namespace veins;
+using namespace omnetpp;
+
+/**
+ * @brief
+ * Small Vehicular Road Side Unit using 11p.
+ * Most common functions are overloaded.
+ * See VehicularRSU11p.cc for hints
+ *
+ * @author Kenniston Arraes Bonfim
+ *
+ */
+class VEINS_API VehicularRSU11p: public VehicularAppLayer {
+protected:
+    void onWSM(BaseFrame1609_4* wsm) override;
+    void onWSA(ServiceAdvertisment* wsa) override;
+};
+
+#endif /* APP_VEHICULARRSU11P_H_ */

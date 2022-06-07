@@ -19,21 +19,21 @@
 //
 // @author  Kenniston Arraes Bonfim
 // @email   kenniston@gmail.com
-// @date    31/05/2022
+// @date    06/06/2022
 // @version 1.0
 //
 
 package smart.app;
 
 //
-// Vehicular application.
+// Vehicular Road Side Unit (RSU).
 //
 // @author Kenniston Arraes Bonfim
 //
-// Network description for Vehicular application.
+// Network description for Vehicular Road Side Unit.
 //
-simple VehicularApp extends VehicularAppLayer
+simple VehicularRSU11p extends VehicularAppLayer
 {
-    @class(VehicularApp);
-    string appName = default("Kenniston Veins App");
+    @class(VehicularRSU11p);
+    @display("i=block/app2");
 }

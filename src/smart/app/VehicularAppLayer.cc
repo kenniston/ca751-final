@@ -308,7 +308,7 @@ namespace veins {
             generatedWSAs++;
         }
         else if (dynamic_cast<BaseFrame1609_4*>(msg)) {
-            EV_TRACE << "sending down a wsm" << std::endl;
+            EV_TRACE << "sending down a WSM" << std::endl;
             generatedWSMs++;
         }
     }

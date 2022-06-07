@@ -19,21 +19,25 @@
 //
 // @author  Kenniston Arraes Bonfim
 // @email   kenniston@gmail.com
-// @date    31/05/2022
+// @date    06/06/2022
 // @version 1.0
 //
 
-package smart.app;
+#include "VehicularRSU11p.h"
 
-//
-// Vehicular application.
-//
-// @author Kenniston Arraes Bonfim
-//
-// Network description for Vehicular application.
-//
-simple VehicularApp extends VehicularAppLayer
+Define_Module(VehicularRSU11p);
+
+void VehicularRSU11p::onWSA(ServiceAdvertisment* wsa)
 {
-    @class(VehicularApp);
-    string appName = default("Kenniston Veins App");
+    // if this RSU receives a WSA for service 42, it will tune to the chan
+    if (wsa->getPsid() == 42) {
+        mac->changeServiceChannel(static_cast<Channel>(wsa->getTargetChannel()));
+    }
+}
+
+void VehicularRSU11p::onWSM(BaseFrame1609_4* frame)
+{
+    BasicSafetyMessage* wsm = check_and_cast<BasicSafetyMessage*>(frame);
+    // this rsu repeats the received traffic update in 2 seconds plus some random delay
+    sendDelayedDown(wsm->dup(), 2 + uniform(0.01, 0.2));
 }
