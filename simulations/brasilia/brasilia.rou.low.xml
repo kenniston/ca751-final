@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2022-06-06 15:26:27 by Eclipse SUMO duarouter Version 1.13.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/duarouterConfiguration.xsd">
+
+    <input>
+        <net-file value="/home/kenniston/2022-06-06-15-26-09/osm.net.xml"/>
+        <route-files value="/home/kenniston/2022-06-06-15-26-09/osm.passenger.trips.xml"/>
+    </input>
+
+    <output>
+        <output-file value="/home/kenniston/2022-06-06-15-26-09/osm.passenger.trips.xml.tmp"/>
+        <write-trips value="true"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="3600"/>
+    </time>
+
+    <report>
+        <no-warnings value="true"/>
+        <ignore-errors value="true"/>
+        <no-step-log value="true"/>
+    </report>
+
+</configuration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vType id="veh_passenger" vClass="passenger"/>
+    <trip id="veh1" type="veh_passenger" depart="1.79" departLane="best" from="132682474#8" to="132503186#55"/>
+    <trip id="veh3" type="veh_passenger" depart="5.37" departLane="best" from="917849372#20" to="-782131285#0"/>
+    <trip id="veh4" type="veh_passenger" depart="7.16" departLane="best" from="153716358#0" to="-145781314#1"/>
+    <trip id="veh5" type="veh_passenger" depart="8.95" departLane="best" from="132503186#22" to="225016833"/>
+    <trip id="veh7" type="veh_passenger" depart="12.53" departLane="best" from="297835564#4" to="25615566#4"/>
+    <trip id="veh9" type="veh_passenger" depart="16.11" departLane="best" from="782131285#0" to="-125232979"/>
+    <trip id="veh10" type="veh_passenger" depart="17.90" departLane="best" from="782128610" to="435365059#1"/>
+    <trip id="veh11" type="veh_passenger" depart="19.69" departLane="best" from="135229846#0" to="132416246#2"/>
+    <trip id="veh12" type="veh_passenger" depart="21.48" departLane="best" from="920932571" to="142111775#2"/>
+    <trip id="veh13" type="veh_passenger" depart="23.27" departLane="best" departSpeed="max" from="-782107480" to="-84511682#0"/>
+    <trip id="veh14" type="veh_passenger" depart="25.06" departLane="best" from="84203519#3" to="297835564#2"/>
+    <trip id="veh15" type="veh_passenger" depart="26.85" departLane="best" from="782131282" to="514311816#0"/>
+    <trip id="veh16" type="veh_passenger" depart="28.64" departLane="best" departSpeed="max" from="225016832#0" to="968594170#2"/>
+    <trip id="veh17" type="veh_passenger" depart="30.43" departLane="best" from="145779395#22" to="25615568#2"/>
+    <trip id="veh18" type="veh_passenger" depart="32.22" departLane="best" from="825543536#1" to="363405296"/>
+</routes>

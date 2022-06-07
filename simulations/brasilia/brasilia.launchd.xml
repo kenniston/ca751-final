@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <copy file="brasilia.net.xml" />
+    <copy file="brasilia.rou.low.xml" />
+    <copy file="brasilia.rou.mid.xml" />
+    <copy file="brasilia.rou.high.xml" />
+    <copy file="brasilia.poly.xml" />
+    <copy file="brasilia.view.xml" />
+    <copy file="brasilia.sumo.cfg" type="config" />
+</launch>
