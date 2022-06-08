@@ -29,6 +29,7 @@
 #include <omnetpp.h>
 
 #include "VehicularAppLayer.h"
+#include "../enum/VehicularAppType.h"
 
 using namespace veins;
 using namespace omnetpp;
@@ -57,6 +58,8 @@ protected:
 
     void handleSelfMsg(cMessage* msg) override;
     void handlePositionUpdate(cObject* obj) override;
+
+    VehicularAppType evaluateType(double probability);
 };
 
 #endif /* APP_VEHICULARAPP_H_ */

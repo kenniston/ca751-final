@@ -44,14 +44,14 @@ OBJS = \
     $O/veins_inet/VeinsInetManagerForker.o \
     $O/veins_inet/VeinsInetMobility.o \
     $O/veins_inet/VeinsInetSampleApplication.o \
-    $O/smart/messages/BasicSafetyMessage_m.o \
-    $O/smart/messages/ServiceAdvertisement_m.o \
+    $O/smart/message/BasicSafetyMessage_m.o \
+    $O/smart/message/ServiceAdvertisement_m.o \
     $O/veins_inet/VeinsInetSampleMessage_m.o
 
 # Message files
 MSGFILES = \
-    smart/messages/BasicSafetyMessage.msg \
-    smart/messages/ServiceAdvertisement.msg \
+    smart/message/BasicSafetyMessage.msg \
+    smart/message/ServiceAdvertisement.msg \
     veins_inet/VeinsInetSampleMessage.msg
 
 # SM files

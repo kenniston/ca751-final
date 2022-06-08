@@ -28,9 +28,8 @@
 
 #include <map>
 
-#include "../messages/BasicSafetyMessage_m.h"
-#include "../messages/ServiceAdvertisement_m.h"
-
+#include "../message/BasicSafetyMessage_m.h"
+#include "../message/ServiceAdvertisement_m.h"
 #include "veins/base/modules/BaseApplLayer.h"
 #include "veins/modules/utility/Consts80211p.h"
 #include "veins/modules/messages/BaseFrame1609_4_m.h"

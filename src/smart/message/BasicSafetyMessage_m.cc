@@ -28,7 +28,7 @@
 #include <sstream>
 #include <memory>
 #include <type_traits>
-#include "BasicSafetyMessage_m.h"
+#include "../message/BasicSafetyMessage_m.h"
 
 namespace omnetpp {
 

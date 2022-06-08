@@ -28,7 +28,7 @@
 #include <sstream>
 #include <memory>
 #include <type_traits>
-#include "ServiceAdvertisement_m.h"
+#include "../message/ServiceAdvertisement_m.h"
 
 namespace omnetpp {
 

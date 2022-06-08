@@ -90,3 +90,8 @@ void VehicularApp::handlePositionUpdate(cObject* obj)
     // the vehicle has moved. Code that reacts to new positions goes here.
     // member variables such as currentPosition and currentSpeed are updated in the parent class
 }
+
+VehicularAppType evaluateType(double probability)
+{
+    return VehicularAppType::Genuine;
+}
