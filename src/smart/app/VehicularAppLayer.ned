@@ -57,6 +57,9 @@ simple VehicularAppLayer like IBaseApplLayer
         bool sendWSA = default(false);
         int wsaLengthBits = default(250bit) @unit(bit);
         double wsaInterval =  default(1s) @unit(s);
+        
+        double attackTime = default(10s) @unit(s); //Start time for creating attackers in the simulation.
+        double attackProbability = default(0.03); //Attacker rate in the simulation.
 
     gates:
         input lowerLayerIn; // from mac layer

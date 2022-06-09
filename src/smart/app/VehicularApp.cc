@@ -25,8 +25,11 @@
 
 #include <omnetpp.h>
 #include "VehicularApp.h"
+#include "../support/json/json.hpp"
 
 Define_Module(VehicularApp);
+
+using json = nlohmann::json;
 
 static double totalGenuine = 0;
 static double totalAttacker = 0;
@@ -44,7 +47,6 @@ void VehicularApp::initialize(int stage)
         // Attack parameters
         params.attackTime = par("attackTime");
         params.attackProbability = par("attackProbability");
-
     } else if (stage == 1) {
         EV << par("appName").stringValue() << " initialized! Loading settings..." << std::endl;
 
