@@ -19,50 +19,24 @@
 //
 // @author  Kenniston Arraes Bonfim
 // @email   kenniston@gmail.com
-// @date    31/05/2022
+// @date    09/06/2022
 // @version 1.0
 //
 
-#ifndef APP_VEHICULARAPP_H_
-#define APP_VEHICULARAPP_H_
-
-#include <omnetpp.h>
-
-#include "VehicularAppLayer.h"
-#include "../enum/VehicularAppType.h"
-#include "VehicularAppParams.h"
-
-using namespace veins;
-using namespace omnetpp;
+#ifndef APP_VEHICULARAPPPARAMS_H_
+#define APP_VEHICULARAPPPARAMS_H_
 
 /**
  * @brief
- * Vehicular application for misbehavior detection.
- * Most common functions are overloaded.
- * See VehicularApp.cc for hints
+ * Vehicular application parameters.
  *
  * @author Kenniston Arraes Bonfim
  *
  */
-class VEINS_API VehicularApp: public VehicularAppLayer {
+class VehicularAppParams {
 public:
-    void initialize(int stage) override;
-    void finish() override;
-
-protected:
-    static VehicularAppParams params;
-
-    std::string myVType;
-    bool hasStopped;
-
-    void onBSM(BasicSafetyMessage* bsm) override;
-    void onWSM(BaseFrame1609_4* wsm) override;
-    void onWSA(ServiceAdvertisment* wsa) override;
-
-    void handleSelfMsg(cMessage* msg) override;
-    void handlePositionUpdate(cObject* obj) override;
-
-    VehicularAppType evaluateType(double probability);
+    double attackTime;
+    double attackProbability;
 };
 
-#endif /* APP_VEHICULARAPP_H_ */
+#endif /* APP_VEHICULARAPPPARAMS_H_ */

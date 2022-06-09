@@ -28,6 +28,11 @@
 
 Define_Module(VehicularApp);
 
+static double totalGenuine = 0;
+static double totalAttacker = 0;
+
+VehicularAppParams VehicularApp::params = VehicularAppParams();
+
 void VehicularApp::initialize(int stage)
 {
     VehicularAppLayer::initialize(stage);
@@ -35,6 +40,11 @@ void VehicularApp::initialize(int stage)
     if (stage == 0) {
         // Framework init
         EV << "Initializing " << par("appName").stringValue() << std::endl;
+
+        // Attack parameters
+        params.attackTime = par("attackTime");
+        params.attackProbability = par("attackProbability");
+
     } else if (stage == 1) {
         EV << par("appName").stringValue() << " initialized! Loading settings..." << std::endl;
 
@@ -91,7 +101,31 @@ void VehicularApp::handlePositionUpdate(cObject* obj)
     // member variables such as currentPosition and currentSpeed are updated in the parent class
 }
 
-VehicularAppType evaluateType(double probability)
+/**
+ * Check the probability and creation time of a new attacker.
+ * The probability and start time can be configured in the
+ * omnetpp.ini file.
+ *
+ * @param probability Probability value for creating new attackers.
+ * @see VehicularAppType
+ * @return Evaluated vehicle type (Attacker or Genuine).
+ */
+VehicularAppType VehicularApp::evaluateType(double probability)
 {
+    if (simTime().dbl() < params.attackTime) {
+        return VehicularAppType::Genuine;
+    }
+
+    if ((totalAttacker + totalGenuine) == 0) {
+        totalGenuine++;
+        return VehicularAppType::Genuine;
+    }
+
+    double factor = totalAttacker / (totalGenuine + totalAttacker);
+    if (probability > factor) {
+        totalAttacker++;
+        return VehicularAppType::Attacker;
+    }
+
     return VehicularAppType::Genuine;
 }

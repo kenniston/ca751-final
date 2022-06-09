@@ -29,5 +29,5 @@
 
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
     <vType id="flow_veh_passenger" vClass="passenger" accel="2.6" decel="4.5" sigma="0.5" length="2.5" minGap="2.5" maxSpeed="14" color="1,1,0" />
-    <flow id="flow1" type="flow_veh_passenger" begin="600" end="620" from="145779407" to="132503186#23" number="20"/>
+    <flow id="flow1" type="flow_veh_passenger" begin="500" end="520" from="145779407" to="132503186#23" number="20"/>
 </routes>
