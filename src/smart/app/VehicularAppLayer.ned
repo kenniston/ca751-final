@@ -60,6 +60,8 @@ simple VehicularAppLayer like IBaseApplLayer
         
         double attackTime = default(10s) @unit(s); //Start time for creating attackers in the simulation.
         double attackProbability = default(0.03); //Attacker rate in the simulation.
+        string outputPath = default("./output/"); //Output path to message files and analysis results.
+        string simulationOutputFile = default("simulation.json"); //Output file for all simulation message.
 
     gates:
         input lowerLayerIn; // from mac layer

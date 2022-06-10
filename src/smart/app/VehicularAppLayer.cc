@@ -49,6 +49,8 @@ namespace veins {
             mac = FindModule<DemoBaseApplLayerToMac1609_4Interface*>::findSubModule(getParentModule());
             ASSERT(mac);
 
+            appId = mac->getMACAddress();
+
             // read parameters
             headerLength = par("headerLength");
             sendBeacons = par("sendBeacons").boolValue();
@@ -168,7 +170,9 @@ namespace veins {
         }
         else {
             if (dataOnSch) {
-                wsm->setChannelNumber(static_cast<int>(Channel::sch1)); // will be rewritten at Mac1609_4 to actual Service Channel. This is just so no controlInfo is needed
+                // will be rewritten at Mac1609_4 to actual Service Channel.
+                // This is just so no controlInfo is needed
+                wsm->setChannelNumber(static_cast<int>(Channel::sch1));
             } else {
                 wsm->setChannelNumber(static_cast<int>(Channel::cch));
             }

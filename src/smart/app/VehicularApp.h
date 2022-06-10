@@ -29,8 +29,9 @@
 #include <omnetpp.h>
 
 #include "VehicularAppLayer.h"
-#include "../enum/VehicularAppType.h"
 #include "VehicularAppParams.h"
+#include "../enum/VehicularAppType.h"
+#include "../enum/VehicularAppAttackType.h"
 
 using namespace veins;
 using namespace omnetpp;
@@ -50,19 +51,41 @@ public:
     void finish() override;
 
 protected:
+    /** @brief General application parameters */
     static VehicularAppParams params;
 
-    std::string myVType;
+    /** @brief The car has stopped in sumo simulation */
     bool hasStopped;
 
-    void onBSM(BasicSafetyMessage* bsm) override;
-    void onWSM(BaseFrame1609_4* wsm) override;
-    void onWSA(ServiceAdvertisment* wsa) override;
+    /** @brief Received messages file name */
+    std::string messageFileName;
 
+    /** @brief Vehicule type from sumo integration */
+    std::string sumoVType;
+
+    /** @brief Application attack type based on attack probability parameter */
+    AttackType::VehicularAppAttackType vAppAttackType;
+
+    /** @brief Application type based on attack probability parameter */
+    AppType::VehicularAppType vAppType;
+
+    /** @brief Evaluate the vehicle type on the initialization based on attack probability */
+    void evaluateType();
+
+    /** @brief Handle self messages such as timer or other kinds of self messages */
     void handleSelfMsg(cMessage* msg) override;
+
+    /** @brief The vehicle has moved. Code that reacts to new positions goes here */
     void handlePositionUpdate(cObject* obj) override;
 
-    VehicularAppType evaluateType(double probability);
+    /** @brief The application has received a BEACON message from another car or RSU */
+    void onBSM(BasicSafetyMessage* bsm) override;
+
+    /** @brief The application has received a DATA message from another car or RSU */
+    void onWSM(BaseFrame1609_4* wsm) override;
+
+    /** @brief The application has received a ADVERTISEMENT message from another car or RSU */
+    void onWSA(ServiceAdvertisment* wsa) override;
 };
 
 #endif /* APP_VEHICULARAPP_H_ */

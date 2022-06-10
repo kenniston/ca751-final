@@ -30,6 +30,8 @@
 Define_Module(VehicularApp);
 
 using json = nlohmann::json;
+using appType = AppType::VehicularAppType;
+using attackType = AttackType::VehicularAppAttackType;
 
 static double totalGenuine = 0;
 static double totalAttacker = 0;
@@ -47,13 +49,29 @@ void VehicularApp::initialize(int stage)
         // Attack parameters
         params.attackTime = par("attackTime");
         params.attackProbability = par("attackProbability");
+
+        // Output parameters
+        params.outputPath = par("outputPath").stdstringValue();
+        params.simulationOutputFile = params.outputPath + par("simulationOutputFile").stdstringValue();
     } else if (stage == 1) {
-        EV << par("appName").stringValue() << " initialized! Loading settings..." << std::endl;
+        EV << par("appName").stringValue() << " initialized! " << std::endl;
 
-        myVType = traciVehicle->getVType();
+        // Sumo Vehicle Type
+        sumoVType = traciVehicle->getVType();
 
-        // Change vehicle color in Sumo simulation
-        traciVehicle->setColor(TraCIColor(255, 0, 0, 255));
+        // Configure the Basic Safety Message serialization file name
+        messageFileName = params.outputPath + "msgs-" + appId +  ".json";
+
+        // Evaluate the vehicle type on the initialization
+        evaluateType();
+
+        // Change vehicle color in Sumo simulation based on vehicle type.
+        // The vehicle color must be in RGBA format
+        if (vAppType == AppType::VehicularAppType::Genuine) {
+            traciVehicle->setColor(TraCIColor(255, 255, 0, 255)); // Yellow
+        } else {
+            traciVehicle->setColor(TraCIColor(255, 46, 46, 255)); // Red
+        }
     }
 }
 
@@ -62,10 +80,15 @@ void VehicularApp::finish()
     VehicularAppLayer::finish();
 }
 
+/**
+ * The application has received a beacon message from another car or RSU
+ * code for handling the message goes here.
+ *
+ * @param bsm Beacon message receive by the application.
+ * @see TraciDemo11p
+ */
 void VehicularApp::onBSM(BasicSafetyMessage* bsm)
 {
-    // Your application has received a beacon message from another car or RSU
-    // code for handling the message goes here
     if (!hasStopped) {
         traciVehicle->setSpeedMode(0x1f);
         traciVehicle->setSpeed(0);
@@ -77,30 +100,49 @@ void VehicularApp::onBSM(BasicSafetyMessage* bsm)
     }
 }
 
+/**
+ * The application has received a data message from another car or RSU
+ * code for handling the message goes here.
+ *
+ * @param wsm Data message receive by the application.
+ * @see TraciDemo11p
+ */
 void VehicularApp::onWSM(BaseFrame1609_4* wsm)
 {
-    // Your application has received a data message from another car or RSU
-    // code for handling the message goes here, see TraciDemo11p.cc for examples
+
 }
 
+/**
+ * The application has received a service advertisement from another car or
+ * RSU code for handling the message goes here.
+ *
+ * @param wsa Advertisment message receive by the application.
+ * @see TraciDemo11p
+ */
 void VehicularApp::onWSA(ServiceAdvertisment* wsa)
 {
-    // Your application has received a service advertisement from another car or RSU
-    // code for handling the message goes here, see TraciDemo11p.cc for examples
+
 }
 
+/**
+ * This method is for self messages (mostly timers). it is important to call
+ * the VehicularAppLayer function for BSM and WSM transmission.
+ *
+ * @param msg Message receive by the application.
+ */
 void VehicularApp::handleSelfMsg(cMessage* msg)
 {
     VehicularAppLayer::handleSelfMsg(msg);
-    // this method is for self messages (mostly timers)
-    // it is important to call the DemoBaseApplLayer function for BSM and WSM transmission
 }
 
+/**
+ * The vehicle has moved. Code that reacts to new positions goes here.
+ * member variables such as currentPosition and currentSpeed are updated
+ * in the parent class.
+ */
 void VehicularApp::handlePositionUpdate(cObject* obj)
 {
     VehicularAppLayer::handlePositionUpdate(obj);
-    // the vehicle has moved. Code that reacts to new positions goes here.
-    // member variables such as currentPosition and currentSpeed are updated in the parent class
 }
 
 /**
@@ -110,24 +152,18 @@ void VehicularApp::handlePositionUpdate(cObject* obj)
  *
  * @param probability Probability value for creating new attackers.
  * @see VehicularAppType
- * @return Evaluated vehicle type (Attacker or Genuine).
+ * @see VehicularAppAttackType
  */
-VehicularAppType VehicularApp::evaluateType(double probability)
+void VehicularApp::evaluateType()
 {
-    if (simTime().dbl() < params.attackTime) {
-        return VehicularAppType::Genuine;
-    }
-
-    if ((totalAttacker + totalGenuine) == 0) {
-        totalGenuine++;
-        return VehicularAppType::Genuine;
-    }
-
     double factor = totalAttacker / (totalGenuine + totalAttacker);
-    if (probability > factor) {
+    if (params.attackProbability < factor && simTime().dbl() > params.attackTime) {
         totalAttacker++;
-        return VehicularAppType::Attacker;
+        vAppType = appType::Attacker;
+        vAppAttackType = attackType(rand()%(AttackType::SIZE_OF_ENUM-1 + 1) + 1);
+    } else {
+        totalGenuine++;
+        vAppType = AppType::VehicularAppType::Genuine;
+        vAppAttackType = AttackType::VehicularAppAttackType::Genuine;
     }
-
-    return VehicularAppType::Genuine;
 }

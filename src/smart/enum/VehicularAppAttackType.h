@@ -22,26 +22,28 @@
 // @date    07/06/2022
 // @version 1.0
 //
-#ifndef ENUM_VEHICULARAPPTYPE_H_
-#define ENUM_VEHICULARAPPTYPE_H_
+#ifndef ENUM_VEHICULARAPP_ATTACK_TYPE_H_
+#define ENUM_VEHICULARAPP_ATTACK_TYPE_H_
 
-namespace AppType {
+namespace AttackType {
 
-    enum VehicularAppType {
+    enum VehicularAppAttackType {
         Genuine = 0,
-        Attacker,
+        RandomPosition,
+        ConstantPosition,
         SIZE_OF_ENUM
     };
 
-    static const char* vehicularAppTypeStr[] = {
+    static const char* vehicularAppAttackTypeStr[] = {
         "Genuine",
-        "Attacker"
+        "RandomPosition",
+        "ConstantPosition"
     };
 
-    static const char* vehicularAppToStr(VehicularAppType type) {
-        return vehicularAppTypeStr[type];
+    static const char* vehicularAppAttackToStr(VehicularAppAttackType type) {
+        return vehicularAppAttackTypeStr[type];
     }
 
-} // namespace VehicularAppType
+} // namespace VehicularAttackType
 
-#endif /* ENUM_VEHICULARAPPTYPE_H_ */
+#endif /* ENUM_VEHICULARAPP_ATTACK_TYPE_H_ */

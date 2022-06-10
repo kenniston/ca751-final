@@ -35,8 +35,17 @@
  */
 class VehicularAppParams {
 public:
+    /* Attack start time in seconds */
     double attackTime;
+
+    /* Attacker rate in the simulation */
     double attackProbability;
+
+    /* Output path for messages and result analysis */
+    std::string outputPath;
+
+    /* Global filename for simulation messages */
+    std::string simulationOutputFile;
 };
 
 #endif /* APP_VEHICULARAPPPARAMS_H_ */

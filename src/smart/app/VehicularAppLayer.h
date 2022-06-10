@@ -142,6 +142,9 @@ namespace veins {
         /* support for parking currently only works with TraCI */
         bool isParked;
 
+        /* Application ID (Mac Address is used as ID) */
+        LAddress::L2Type appId;
+
         /* BSM (beacon) settings */
         uint32_t beaconLengthBits;
         uint32_t beaconUserPriority;
