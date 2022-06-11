@@ -143,7 +143,7 @@ namespace veins {
         bool isParked;
 
         /* Application ID (Mac Address is used as ID) */
-        LAddress::L2Type appId;
+        LAddress::L2Type appId = 0;
 
         /* BSM (beacon) settings */
         uint32_t beaconLengthBits;
@@ -165,7 +165,6 @@ namespace veins {
         /* state of the vehicle */
         Coord curPosition;
         Coord curSpeed;
-        LAddress::L2Type myId = 0;
         int mySCH;
 
         /* stats */

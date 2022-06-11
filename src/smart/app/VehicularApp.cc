@@ -23,7 +23,10 @@
 // @version 1.0
 //
 
+#include <unistd.h>
 #include <omnetpp.h>
+#include <fstream>
+#include <sys/stat.h>
 #include "VehicularApp.h"
 #include "../support/json/json.hpp"
 
@@ -51,33 +54,48 @@ void VehicularApp::initialize(int stage)
         params.attackProbability = par("attackProbability");
 
         // Output parameters
-        params.outputPath = par("outputPath").stdstringValue();
+        params.outputPath = std::string(get_current_dir_name()) + "/" + par("outputPath").stdstringValue() + "/";
         params.simulationOutputFile = params.outputPath + par("simulationOutputFile").stdstringValue();
     } else if (stage == 1) {
         EV << par("appName").stringValue() << " initialized! " << std::endl;
-
-        // Sumo Vehicle Type
-        sumoVType = traciVehicle->getVType();
-
-        // Configure the Basic Safety Message serialization file name
-        messageFileName = params.outputPath + "msgs-" + appId +  ".json";
-
-        // Evaluate the vehicle type on the initialization
-        evaluateType();
-
-        // Change vehicle color in Sumo simulation based on vehicle type.
-        // The vehicle color must be in RGBA format
-        if (vAppType == AppType::VehicularAppType::Genuine) {
-            traciVehicle->setColor(TraCIColor(255, 255, 0, 255)); // Yellow
-        } else {
-            traciVehicle->setColor(TraCIColor(255, 46, 46, 255)); // Red
-        }
+        setup();
     }
 }
 
 void VehicularApp::finish()
 {
     VehicularAppLayer::finish();
+}
+
+/**
+ * General application setup
+ */
+void VehicularApp::setup() {
+    // Sumo Vehicle Type
+    sumoVType = traciVehicle->getVType();
+
+    // Create output path
+    mkdir(params.outputPath.c_str(), 0755);
+
+    // Configure the Basic Safety Message serialization file name
+    messageFileName = params.outputPath + "msgs-" + std::to_string(appId) +  ".json";
+
+    json j;
+    j["teste"] = { {"velocity", 123.44}, {"value", "str123"} };
+
+    std::ofstream o(messageFileName, std::ios_base::app);
+    o << j << std::endl;
+
+    // Evaluate the vehicle type on the initialization
+    evaluateType();
+
+    // Change vehicle color in Sumo simulation based on vehicle type.
+    // The vehicle color must be in RGBA format
+    if (vAppType == AppType::VehicularAppType::Genuine) {
+        traciVehicle->setColor(TraCIColor(255, 255, 0, 255)); // Yellow
+    } else {
+        traciVehicle->setColor(TraCIColor(255, 46, 46, 255)); // Red
+    }
 }
 
 /**

@@ -72,6 +72,9 @@ protected:
     /** @brief Evaluate the vehicle type on the initialization based on attack probability */
     void evaluateType();
 
+    /** @brief General application setup */
+    void setup();
+
     /** @brief Handle self messages such as timer or other kinds of self messages */
     void handleSelfMsg(cMessage* msg) override;
 

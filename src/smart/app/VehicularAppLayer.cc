@@ -49,8 +49,6 @@ namespace veins {
             mac = FindModule<DemoBaseApplLayerToMac1609_4Interface*>::findSubModule(getParentModule());
             ASSERT(mac);
 
-            appId = mac->getMACAddress();
-
             // read parameters
             headerLength = par("headerLength");
             sendBeacons = par("sendBeacons").boolValue();
@@ -81,9 +79,8 @@ namespace veins {
             receivedWSMs = 0;
         }
         else if (stage == 1) {
-
             // store MAC address for quick access
-            myId = mac->getMACAddress();
+            appId = mac->getMACAddress();
 
             // simulate asynchronous channel access
             if (dataOnSch == true && !mac->isChannelSwitchingActive()) {
