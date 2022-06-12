@@ -32,9 +32,11 @@
 
 Define_Module(VehicularApp);
 
+using namespace std;
 using json = nlohmann::json;
 using appType = AppType::VehicularAppType;
 using attackType = AttackType::VehicularAppAttackType;
+
 
 static double totalGenuine = 0;
 static double totalAttacker = 0;
@@ -54,7 +56,7 @@ void VehicularApp::initialize(int stage)
         params.attackProbability = par("attackProbability");
 
         // Output parameters
-        params.outputPath = std::string(get_current_dir_name()) + "/" + par("outputPath").stdstringValue() + "/";
+        params.outputPath = string(get_current_dir_name()) + "/" + par("outputPath").stdstringValue() + "/";
         params.simulationOutputFile = params.outputPath + par("simulationOutputFile").stdstringValue();
     } else if (stage == 1) {
         EV << par("appName").stringValue() << " initialized! " << std::endl;
@@ -65,6 +67,12 @@ void VehicularApp::initialize(int stage)
 void VehicularApp::finish()
 {
     VehicularAppLayer::finish();
+
+    // Close all output streams for this application
+    messageJsonOutStream.close();
+    globalJsonMessageOutStream.close();
+    messageCsvOutStream.close();
+    globalCsvMessageOutStream.close();
 }
 
 /**
@@ -76,15 +84,19 @@ void VehicularApp::setup() {
 
     // Create output path
     mkdir(params.outputPath.c_str(), 0755);
+    mkdir((params.outputPath + "csv/").c_str(), 0755);
+    mkdir((params.outputPath + "json/").c_str(), 0755);
 
-    // Configure the Basic Safety Message serialization file name
-    messageFileName = params.outputPath + "msgs-" + std::to_string(appId) +  ".json";
+    // Create output streams for the Basic Safety Message serialization
+    string jsonMessageFileName = params.outputPath + "json/bsm-app-" + std::to_string(appId) +  ".json";
+    string jsonGlobalMessageFileName = params.outputPath + "json/global-bsm.json";
+    string csvMessageFileName = params.outputPath + "csv/bsm-app-" + std::to_string(appId) +  ".csv";
+    string csvGlobalMessageFileName = params.outputPath + "csv/global-bsm.csv";
 
-    json j;
-    j["teste"] = { {"velocity", 123.44}, {"value", "str123"} };
-
-    std::ofstream o(messageFileName, std::ios_base::app);
-    o << j << std::endl;
+    messageJsonOutStream.open(jsonMessageFileName, ios_base::app);
+    globalJsonMessageOutStream.open(jsonGlobalMessageFileName, ios_base::app);
+    messageCsvOutStream.open(csvMessageFileName, ios_base::app);
+    globalCsvMessageOutStream.open(csvGlobalMessageFileName, ios_base::app);
 
     // Evaluate the vehicle type on the initialization
     evaluateType();
@@ -99,6 +111,44 @@ void VehicularApp::setup() {
 }
 
 /**
+ * Save the BSM to output stream in JSON format.
+ *
+ * @param bsm The Basic Safety Message to save.
+ * @see BasicSafetyMessage
+ */
+void VehicularApp::saveJsonBSM(BasicSafetyMessage* bsm)
+{
+    json j;
+
+    // Receiver ID in the simulation
+    j["receiver"] = appId;
+
+    // Receiver position at current simulation time
+    Coord currPosition = mobility->getPositionAt(simTime());
+    j["position"] = to_string(currPosition.x) + "," + to_string(currPosition.y) + "," + to_string(currPosition.z);
+
+    // Distance between sender and receiver vehicles
+    double distance = currPosition.distance(bsm->getSenderPos());
+    j["distance"] = distance;
+
+    Coord senderPosition = bsm->getSenderPos();
+    j["senderPos"] = to_string(senderPosition.x) + "," + to_string(senderPosition.y) + "," + to_string(senderPosition.z);
+
+    messageJsonOutStream << j << endl;
+}
+
+/**
+ * Save the BSM to output stream in CSV format.
+ *
+ * @param bsm The Basic Safety Message to save.
+ * @see BasicSafetyMessage
+ */
+void VehicularApp::saveCsvBSM(BasicSafetyMessage* bsm)
+{
+
+}
+
+/**
  * The application has received a beacon message from another car or RSU
  * code for handling the message goes here.
  *
@@ -107,6 +157,8 @@ void VehicularApp::setup() {
  */
 void VehicularApp::onBSM(BasicSafetyMessage* bsm)
 {
+    saveJsonBSM(bsm);
+
     if (!hasStopped) {
         traciVehicle->setSpeedMode(0x1f);
         traciVehicle->setSpeed(0);

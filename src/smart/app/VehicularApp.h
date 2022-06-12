@@ -33,6 +33,7 @@
 #include "../enum/VehicularAppType.h"
 #include "../enum/VehicularAppAttackType.h"
 
+using namespace std;
 using namespace veins;
 using namespace omnetpp;
 
@@ -57,11 +58,20 @@ protected:
     /** @brief The car has stopped in sumo simulation */
     bool hasStopped;
 
-    /** @brief Received messages file name */
-    std::string messageFileName;
+    /** @brief Received messages output stream in JSON format */
+    ofstream messageJsonOutStream;
+
+    /** @brief Global output stream for all vehicles in JSON format. The stream file is the same for all vehicles. */
+    ofstream globalJsonMessageOutStream;
+
+    /** @brief Received messages output stream in CSV format */
+    ofstream messageCsvOutStream;
+
+    /** @brief Global output stream for all vehicles in CSV format. This stream file is the same for all vehicles. */
+    ofstream globalCsvMessageOutStream;
 
     /** @brief Vehicule type from sumo integration */
-    std::string sumoVType;
+    string sumoVType;
 
     /** @brief Application attack type based on attack probability parameter */
     AttackType::VehicularAppAttackType vAppAttackType;
@@ -89,6 +99,12 @@ protected:
 
     /** @brief The application has received a ADVERTISEMENT message from another car or RSU */
     void onWSA(ServiceAdvertisment* wsa) override;
+
+    /** @brief Save the BSM to output stream in JSON format */
+    void saveJsonBSM(BasicSafetyMessage* bsm);
+
+    /** @brief Save the BSM to output stream in CSV format */
+    void saveCsvBSM(BasicSafetyMessage* bsm);
 };
 
 #endif /* APP_VEHICULARAPP_H_ */
