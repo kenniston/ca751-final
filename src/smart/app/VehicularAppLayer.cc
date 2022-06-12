@@ -154,6 +154,7 @@ namespace veins {
         if (BasicSafetyMessage* bsm = dynamic_cast<BasicSafetyMessage*>(wsm)) {
             bsm->setSenderPos(curPosition);
             bsm->setSenderSpeed(curSpeed);
+            bsm->setSenderRealId(appId);
             bsm->setPsid(-1);
             bsm->setChannelNumber(static_cast<int>(Channel::cch));
             bsm->addBitLength(beaconLengthBits);

@@ -1,5 +1,5 @@
 //
-// Generated file, do not edit! Created by opp_msgtool 6.0 from smart/messages/BasicSafetyMessage.msg.
+// Generated file, do not edit! Created by opp_msgtool 6.0 from smart/message/BasicSafetyMessage.msg.
 //
 
 #ifndef __VEINS_BASICSAFETYMESSAGE_M_H
@@ -33,7 +33,7 @@ class BasicSafetyMessage;
 namespace veins {
 
 /**
- * Class generated from <tt>smart/messages/BasicSafetyMessage.msg:32</tt> by opp_msgtool.
+ * Class generated from <tt>smart/message/BasicSafetyMessage.msg:32</tt> by opp_msgtool.
  * <pre>
  * class BasicSafetyMessage extends BaseFrame1609_4
  * {
@@ -47,7 +47,7 @@ namespace veins {
  *     Coord senderAccelConfidence;
  *     double senderWidth;
  *     double senderLength;
- *     int senderMbType;
+ *     int senderType;
  *     int senderAttackType;
  *     Coord senderGpsCoordinates;
  *     LAddress::L2Type senderRealId;
@@ -68,7 +68,7 @@ class BasicSafetyMessage : public ::veins::BaseFrame1609_4
     Coord senderAccelConfidence;
     double senderWidth = 0;
     double senderLength = 0;
-    int senderMbType = 0;
+    int senderType = 0;
     int senderAttackType = 0;
     Coord senderGpsCoordinates;
     LAddress::L2Type senderRealId;
@@ -127,8 +127,8 @@ class BasicSafetyMessage : public ::veins::BaseFrame1609_4
     virtual double getSenderLength() const;
     virtual void setSenderLength(double senderLength);
 
-    virtual int getSenderMbType() const;
-    virtual void setSenderMbType(int senderMbType);
+    virtual int getSenderType() const;
+    virtual void setSenderType(int senderType);
 
     virtual int getSenderAttackType() const;
     virtual void setSenderAttackType(int senderAttackType);

@@ -23,9 +23,10 @@
 // @version 1.0
 //
 
+#include <limits>
+#include <fstream>
 #include <unistd.h>
 #include <omnetpp.h>
-#include <fstream>
 #include <sys/stat.h>
 #include "VehicularApp.h"
 #include "../support/json/json.hpp"
@@ -56,7 +57,9 @@ void VehicularApp::initialize(int stage)
         params.attackProbability = par("attackProbability");
 
         // Output parameters
-        params.outputPath = string(get_current_dir_name()) + "/" + par("outputPath").stdstringValue() + "/";
+        char *buf = (char*)malloc(sizeof(char) * PATH_MAX);
+        char *dir = getcwd(buf, PATH_MAX);
+        params.outputPath = string(dir) + "/" + par("outputPath").stdstringValue() + "/";
         params.simulationOutputFile = params.outputPath + par("simulationOutputFile").stdstringValue();
     } else if (stage == 1) {
         EV << par("appName").stringValue() << " initialized! " << std::endl;
@@ -118,23 +121,54 @@ void VehicularApp::setup() {
  */
 void VehicularApp::saveJsonBSM(BasicSafetyMessage* bsm)
 {
-    json j;
+    nlohmann::ordered_json j;
 
     // Receiver ID in the simulation
     j["receiver"] = appId;
+
+    // Sender ID in the simulation
+    j["sender"] = bsm->getSenderRealId();
 
     // Receiver position at current simulation time
     Coord currPosition = mobility->getPositionAt(simTime());
     j["position"] = to_string(currPosition.x) + "," + to_string(currPosition.y) + "," + to_string(currPosition.z);
 
+    // Receiver speed
+    Coord currSpeed = mobility->getHostSpeed();
+    j["speed"] = to_string(currSpeed.x) + "," + to_string(currSpeed.y) + "," + to_string(currSpeed.z);
+
     // Distance between sender and receiver vehicles
     double distance = currPosition.distance(bsm->getSenderPos());
     j["distance"] = distance;
 
+    // Sender position
     Coord senderPosition = bsm->getSenderPos();
     j["senderPos"] = to_string(senderPosition.x) + "," + to_string(senderPosition.y) + "," + to_string(senderPosition.z);
 
+    // Sender speed
+    Coord senderSpeed = bsm->getSenderSpeed();
+    j["senderSpeed"] = to_string(senderSpeed.x) + "," + to_string(senderSpeed.y) + "," + to_string(senderSpeed.z);
+
+    // Sender acceleration
+    Coord senderAccel = bsm->getSenderAccel();
+    j["senderAccel"] = to_string(senderAccel.x) + "," + to_string(senderAccel.y) + "," + to_string(senderAccel.z);
+
+    // Sender acceleration
+    Coord senderHeading = bsm->getSenderHeading();
+    j["senderHeading"] = to_string(senderHeading.x) + "," + to_string(senderHeading.y) + "," + to_string(senderHeading.z);
+
+    // Sender GPS Coordinates
+    Coord senderGPSPos = bsm->getSenderGpsCoordinates();
+    j["senderGPSPos"] = to_string(senderGPSPos.x) + "," + to_string(senderGPSPos.y) + "," + to_string(senderGPSPos.z);
+
+    // Sender Attacker Type
+    j["attackType"] = bsm->getSenderAttackType();
+
+    // Sender Type - Genuine or Attacker
+    j["senderType"] = bsm->getSenderType();
+
     messageJsonOutStream << j << endl;
+    globalJsonMessageOutStream << j << endl;
 }
 
 /**
@@ -145,6 +179,15 @@ void VehicularApp::saveJsonBSM(BasicSafetyMessage* bsm)
  */
 void VehicularApp::saveCsvBSM(BasicSafetyMessage* bsm)
 {
+
+}
+
+/**
+ * Sets all the necessary fields in the WSM, BSM, or WSA.
+ *
+ */
+void VehicularApp::populateWSM(BaseFrame1609_4* wsm, LAddress::L2Type rcvId, int serial) {
+    VehicularAppLayer::populateWSM(wsm, rcvId, serial);
 
 }
 

@@ -91,6 +91,9 @@ protected:
     /** @brief The vehicle has moved. Code that reacts to new positions goes here */
     void handlePositionUpdate(cObject* obj) override;
 
+    /** @brief sets all the necessary fields in the WSM, BSM, or WSA. */
+    void populateWSM(BaseFrame1609_4* wsm, LAddress::L2Type rcvId = LAddress::L2BROADCAST(), int serial = 0) override;
+
     /** @brief The application has received a BEACON message from another car or RSU */
     void onBSM(BasicSafetyMessage* bsm) override;
 

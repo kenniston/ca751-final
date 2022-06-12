@@ -40,7 +40,7 @@ class BasicSafetyMessage extends BaseFrame1609_4 {
     Coord senderAccelConfidence;
     double senderWidth;
     double senderLength;
-    int senderMbType;
+    int senderType;
     int senderAttackType;
     Coord senderGpsCoordinates;
     LAddress::L2Type senderRealId;

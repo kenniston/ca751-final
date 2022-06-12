@@ -3,3 +3,4 @@ src/smart_dbg
 results/
 doc/
 output/
+.DS_Store
