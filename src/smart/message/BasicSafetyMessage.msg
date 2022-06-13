@@ -42,4 +42,5 @@ class BasicSafetyMessage extends BaseFrame1609_4 {
     int senderAttackType;
     unsigned long senderPseudonym;
     bool rsu;
+    double rss;
 }

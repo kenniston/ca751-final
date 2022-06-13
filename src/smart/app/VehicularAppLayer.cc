@@ -24,6 +24,8 @@
 //
 
 #include "VehicularAppLayer.h"
+#include "veins/base/phyLayer/PhyToMacControlInfo.h"
+#include "veins/modules/phy/DeciderResult80211.h"
 
 namespace veins {
 
@@ -209,12 +211,19 @@ namespace veins {
         BaseFrame1609_4* wsm = dynamic_cast<BaseFrame1609_4*>(msg);
         ASSERT(wsm);
 
+        PhyToMacControlInfo* phyCtrl = check_and_cast<PhyToMacControlInfo*>(wsm->getControlInfo());
+        DeciderResult80211* decider = check_and_cast<DeciderResult80211*>(phyCtrl->getDeciderResult());
+
         if (BasicSafetyMessage* bsm = dynamic_cast<BasicSafetyMessage*>(wsm)) {
             receivedBSMs++;
+            // Update Received Signal Strength (RSS)
+            bsm->setRss(decider->getRecvPower_dBm());
             onBSM(bsm);
         }
         else if (ServiceAdvertisment* wsa = dynamic_cast<ServiceAdvertisment*>(wsm)) {
             receivedWSAs++;
+            // Update Received Signal Strength (RSS)
+            wsa->setRss(decider->getRecvPower_dBm());
             onWSA(wsa);
         }
         else {

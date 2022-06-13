@@ -36,6 +36,7 @@ namespace veins {
  *     int targetChannel;
  *     string serviceDescription;
  *     bool rsu;
+ *     double rss;
  * }
  * </pre>
  */
@@ -45,6 +46,7 @@ class ServiceAdvertisment : public ::veins::BaseFrame1609_4
     int targetChannel = 0;
     ::omnetpp::opp_string serviceDescription;
     bool rsu = false;
+    double rss = 0;
 
   private:
     void copy(const ServiceAdvertisment& other);
@@ -69,6 +71,9 @@ class ServiceAdvertisment : public ::veins::BaseFrame1609_4
 
     virtual bool getRsu() const;
     virtual void setRsu(bool rsu);
+
+    virtual double getRss() const;
+    virtual void setRss(double rss);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const ServiceAdvertisment& obj) {obj.parsimPack(b);}

@@ -180,6 +180,7 @@ void ServiceAdvertisment::copy(const ServiceAdvertisment& other)
     this->targetChannel = other.targetChannel;
     this->serviceDescription = other.serviceDescription;
     this->rsu = other.rsu;
+    this->rss = other.rss;
 }
 
 void ServiceAdvertisment::parsimPack(omnetpp::cCommBuffer *b) const
@@ -188,6 +189,7 @@ void ServiceAdvertisment::parsimPack(omnetpp::cCommBuffer *b) const
     doParsimPacking(b,this->targetChannel);
     doParsimPacking(b,this->serviceDescription);
     doParsimPacking(b,this->rsu);
+    doParsimPacking(b,this->rss);
 }
 
 void ServiceAdvertisment::parsimUnpack(omnetpp::cCommBuffer *b)
@@ -196,6 +198,7 @@ void ServiceAdvertisment::parsimUnpack(omnetpp::cCommBuffer *b)
     doParsimUnpacking(b,this->targetChannel);
     doParsimUnpacking(b,this->serviceDescription);
     doParsimUnpacking(b,this->rsu);
+    doParsimUnpacking(b,this->rss);
 }
 
 int ServiceAdvertisment::getTargetChannel() const
@@ -228,6 +231,16 @@ void ServiceAdvertisment::setRsu(bool rsu)
     this->rsu = rsu;
 }
 
+double ServiceAdvertisment::getRss() const
+{
+    return this->rss;
+}
+
+void ServiceAdvertisment::setRss(double rss)
+{
+    this->rss = rss;
+}
+
 class ServiceAdvertismentDescriptor : public omnetpp::cClassDescriptor
 {
   private:
@@ -236,6 +249,7 @@ class ServiceAdvertismentDescriptor : public omnetpp::cClassDescriptor
         FIELD_targetChannel,
         FIELD_serviceDescription,
         FIELD_rsu,
+        FIELD_rss,
     };
   public:
     ServiceAdvertismentDescriptor();
@@ -302,7 +316,7 @@ const char *ServiceAdvertismentDescriptor::getProperty(const char *propertyName)
 int ServiceAdvertismentDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
-    return base ? 3+base->getFieldCount() : 3;
+    return base ? 4+base->getFieldCount() : 4;
 }
 
 unsigned int ServiceAdvertismentDescriptor::getFieldTypeFlags(int field) const
@@ -317,8 +331,9 @@ unsigned int ServiceAdvertismentDescriptor::getFieldTypeFlags(int field) const
         FD_ISEDITABLE,    // FIELD_targetChannel
         FD_ISEDITABLE,    // FIELD_serviceDescription
         FD_ISEDITABLE,    // FIELD_rsu
+        FD_ISEDITABLE,    // FIELD_rss
     };
-    return (field >= 0 && field < 3) ? fieldTypeFlags[field] : 0;
+    return (field >= 0 && field < 4) ? fieldTypeFlags[field] : 0;
 }
 
 const char *ServiceAdvertismentDescriptor::getFieldName(int field) const
@@ -333,8 +348,9 @@ const char *ServiceAdvertismentDescriptor::getFieldName(int field) const
         "targetChannel",
         "serviceDescription",
         "rsu",
+        "rss",
     };
-    return (field >= 0 && field < 3) ? fieldNames[field] : nullptr;
+    return (field >= 0 && field < 4) ? fieldNames[field] : nullptr;
 }
 
 int ServiceAdvertismentDescriptor::findField(const char *fieldName) const
@@ -344,6 +360,7 @@ int ServiceAdvertismentDescriptor::findField(const char *fieldName) const
     if (strcmp(fieldName, "targetChannel") == 0) return baseIndex + 0;
     if (strcmp(fieldName, "serviceDescription") == 0) return baseIndex + 1;
     if (strcmp(fieldName, "rsu") == 0) return baseIndex + 2;
+    if (strcmp(fieldName, "rss") == 0) return baseIndex + 3;
     return base ? base->findField(fieldName) : -1;
 }
 
@@ -359,8 +376,9 @@ const char *ServiceAdvertismentDescriptor::getFieldTypeString(int field) const
         "int",    // FIELD_targetChannel
         "string",    // FIELD_serviceDescription
         "bool",    // FIELD_rsu
+        "double",    // FIELD_rss
     };
-    return (field >= 0 && field < 3) ? fieldTypeStrings[field] : nullptr;
+    return (field >= 0 && field < 4) ? fieldTypeStrings[field] : nullptr;
 }
 
 const char **ServiceAdvertismentDescriptor::getFieldPropertyNames(int field) const
@@ -446,6 +464,7 @@ std::string ServiceAdvertismentDescriptor::getFieldValueAsString(omnetpp::any_pt
         case FIELD_targetChannel: return long2string(pp->getTargetChannel());
         case FIELD_serviceDescription: return oppstring2string(pp->getServiceDescription());
         case FIELD_rsu: return bool2string(pp->getRsu());
+        case FIELD_rss: return double2string(pp->getRss());
         default: return "";
     }
 }
@@ -465,6 +484,7 @@ void ServiceAdvertismentDescriptor::setFieldValueAsString(omnetpp::any_ptr objec
         case FIELD_targetChannel: pp->setTargetChannel(string2long(value)); break;
         case FIELD_serviceDescription: pp->setServiceDescription((value)); break;
         case FIELD_rsu: pp->setRsu(string2bool(value)); break;
+        case FIELD_rss: pp->setRss(string2double(value)); break;
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'ServiceAdvertisment'", field);
     }
 }
@@ -482,6 +502,7 @@ omnetpp::cValue ServiceAdvertismentDescriptor::getFieldValue(omnetpp::any_ptr ob
         case FIELD_targetChannel: return pp->getTargetChannel();
         case FIELD_serviceDescription: return pp->getServiceDescription();
         case FIELD_rsu: return pp->getRsu();
+        case FIELD_rss: return pp->getRss();
         default: throw omnetpp::cRuntimeError("Cannot return field %d of class 'ServiceAdvertisment' as cValue -- field index out of range?", field);
     }
 }
@@ -501,6 +522,7 @@ void ServiceAdvertismentDescriptor::setFieldValue(omnetpp::any_ptr object, int f
         case FIELD_targetChannel: pp->setTargetChannel(omnetpp::checked_int_cast<int>(value.intValue())); break;
         case FIELD_serviceDescription: pp->setServiceDescription(value.stringValue()); break;
         case FIELD_rsu: pp->setRsu(value.boolValue()); break;
+        case FIELD_rss: pp->setRss(value.doubleValue()); break;
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'ServiceAdvertisment'", field);
     }
 }

@@ -112,7 +112,7 @@ void VehicularApp::setup() {
             "headingX,headingY,headingZ,distance,sender,senderPosX,senderPosY,"
             "senderPosZ,senderSpeedX,senderSpeedY,senderSpeedZ,senderHeadingX,"
             "senderHeadingY,senderHeadingZ,senderAccel,senderGPSPosX,senderGPSPosY,"
-            "senderGPSPosZ,attackType,senderType,isRSU";
+            "senderGPSPosZ,attackType,senderType,isRSU,RSS";
 
     if (params.writeJsonVehicleMessages) {
         messageJsonOutStream.open(jsonMessageFileName, ios_base::app);
@@ -200,6 +200,9 @@ void VehicularApp::saveJsonBSM(BasicSafetyMessage* bsm)
     // RSU flag
     j["isRSU"] = bsm->getRsu() ? 1 : 0;
 
+    // Received Signal Strength (RSS)
+    j["RSS"] = bsm->getRss();
+
     if (params.writeJsonVehicleMessages) {
         messageJsonOutStream << j << endl;
     }
@@ -263,7 +266,10 @@ void VehicularApp::saveCsvBSM(BasicSafetyMessage* bsm)
     str << bsm->getSenderType() << ",";
 
     // RSU flag
-    str << (bsm->getRsu() ? 1 : 0);
+    str << (bsm->getRsu() ? 1 : 0) << ",";
+
+    // Received Signal Strength (RSS)
+    str << bsm->getRss();
 
     if (params.writeCsvVehicleMessages) {
         messageCsvOutStream << str.str() << endl;
