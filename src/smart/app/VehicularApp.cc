@@ -107,6 +107,12 @@ void VehicularApp::setup() {
     string jsonGlobalMessageFileName = params.outputPath + "json/global-bsm.json";
     string csvMessageFileName = params.outputPath + "csv/bsm-app-" + std::to_string(appId) +  ".csv";
     string csvGlobalMessageFileName = params.outputPath + "csv/global-bsm.csv";
+    string csvHeader =
+            "receiver,positionX,positionY,positionZ,speedX,speedY,speedZ,"
+            "headingX,headingY,headingZ,distance,sender,senderPosX,senderPosY,"
+            "senderPosZ,senderSpeedX,senderSpeedY,senderSpeedZ,senderHeadingX,"
+            "senderHeadingY,senderHeadingZ,senderAccel,senderGPSPosX,senderGPSPosY,"
+            "senderGPSPosZ,attackType,senderType,isRSU";
 
     if (params.writeJsonVehicleMessages) {
         messageJsonOutStream.open(jsonMessageFileName, ios_base::app);
@@ -115,10 +121,14 @@ void VehicularApp::setup() {
         globalJsonMessageOutStream.open(jsonGlobalMessageFileName, ios_base::app);
     }
     if (params.writeCsvVehicleMessages) {
+        bool createHeader = access(csvMessageFileName.c_str(), F_OK) == -1;
         messageCsvOutStream.open(csvMessageFileName, ios_base::app);
+        if (createHeader) messageCsvOutStream << csvHeader << endl;
     }
     if (params.writeCsvGlobalMessages) {
+        bool createHeader = access(csvGlobalMessageFileName.c_str(), F_OK) == -1;
         globalCsvMessageOutStream.open(csvGlobalMessageFileName, ios_base::app);
+        if (createHeader) globalCsvMessageOutStream << csvHeader << endl;
     }
 
     // Evaluate the vehicle type on the initialization
@@ -187,6 +197,9 @@ void VehicularApp::saveJsonBSM(BasicSafetyMessage* bsm)
     // Sender Type - Genuine or Attacker
     j["senderType"] = bsm->getSenderType();
 
+    // RSU flag
+    j["isRSU"] = bsm->getRsu() ? 1 : 0;
+
     if (params.writeJsonVehicleMessages) {
         messageJsonOutStream << j << endl;
     }
@@ -203,7 +216,61 @@ void VehicularApp::saveJsonBSM(BasicSafetyMessage* bsm)
  */
 void VehicularApp::saveCsvBSM(BasicSafetyMessage* bsm)
 {
+    stringstream str;
 
+    // Receiver ID in the simulation
+    str << appId << ",";
+
+    // Receiver position at current simulation time
+    str << to_string(curPosition.x) + "," + to_string(curPosition.y) + "," + to_string(curPosition.z) << ",";
+
+    // Receiver speed
+    str << to_string(curSpeed.x) + "," + to_string(curSpeed.y) + "," + to_string(curSpeed.z) << ",";
+
+    // Receiver heading
+    str << to_string(curHeading.x) + "," + to_string(curHeading.y) + "," + to_string(curHeading.z) << ",";
+
+    // Distance between sender and receiver vehicles
+    double distance = curPosition.distance(bsm->getSenderPos());
+    str << distance << ",";
+
+    // Sender ID in the simulation
+    str << bsm->getSenderId() << ",";
+
+    // Sender position
+    Coord senderPosition = bsm->getSenderPos();
+    str << to_string(senderPosition.x) + "," + to_string(senderPosition.y) + "," + to_string(senderPosition.z) << ",";
+
+    // Sender speed
+    Coord senderSpeed = bsm->getSenderSpeed();
+    str << to_string(senderSpeed.x) + "," + to_string(senderSpeed.y) + "," + to_string(senderSpeed.z) << ",";
+
+    // Sender heading
+    Coord senderHeading = bsm->getSenderHeading();
+    str << to_string(senderHeading.x) + "," + to_string(senderHeading.y) + "," + to_string(senderHeading.z) << ",";
+
+    // Sender acceleration
+    str << bsm->getSenderAccel() << ",";
+
+    // Sender GPS Coordinates
+    Coord senderGPSPos = bsm->getSenderGpsPos();
+    str << to_string(senderGPSPos.x) + "," + to_string(senderGPSPos.y) + "," + to_string(senderGPSPos.z) << ",";
+
+    // Sender Attacker Type
+    str << bsm->getSenderAttackType() << ",";
+
+    // Sender Type - Genuine or Attacker
+    str << bsm->getSenderType() << ",";
+
+    // RSU flag
+    str << (bsm->getRsu() ? 1 : 0);
+
+    if (params.writeCsvVehicleMessages) {
+        messageCsvOutStream << str.str() << endl;
+    }
+    if (params.writeCsvGlobalMessages) {
+        globalCsvMessageOutStream << str.str() << endl;
+    }
 }
 
 /**
@@ -245,16 +312,6 @@ void VehicularApp::onBSM(BasicSafetyMessage* bsm)
 
     if (params.writeCsvVehicleMessages || params.writeCsvGlobalMessages) {
         saveCsvBSM(bsm);
-    }
-
-    if (!hasStopped) {
-        traciVehicle->setSpeedMode(0x1f);
-        traciVehicle->setSpeed(0);
-        hasStopped = true;
-    } else {
-        traciVehicle->setSpeedMode(0x1f);
-        traciVehicle->setSpeed(20);
-        hasStopped = false;
     }
 }
 
