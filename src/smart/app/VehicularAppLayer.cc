@@ -81,6 +81,7 @@ namespace veins {
         else if (stage == 1) {
             // store MAC address for quick access
             appId = mac->getMACAddress();
+            //WATCH(appId);
 
             // simulate asynchronous channel access
             if (dataOnSch == true && !mac->isChannelSwitchingActive()) {

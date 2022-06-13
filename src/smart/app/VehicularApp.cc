@@ -372,10 +372,10 @@ void VehicularApp::handlePositionUpdate(cObject* obj)
 void VehicularApp::evaluateType()
 {
     double factor = totalAttacker / (totalGenuine + totalAttacker);
-    if (params.attackProbability < factor && simTime().dbl() > params.attackTime) {
+    if (params.attackProbability > factor && simTime().dbl() > params.attackTime) {
         totalAttacker++;
         vAppType = appType::Attacker;
-        vAppAttackType = attackType(rand()%(AttackType::SIZE_OF_ENUM-1 + 1) + 1);
+        vAppAttackType = attackType(rand()%(AttackType::SIZE_OF_ENUM-1) + 1);
     } else {
         totalGenuine++;
         vAppType = AppType::VehicularAppType::Genuine;
