@@ -1,5 +1,5 @@
 //
-// Generated file, do not edit! Created by opp_msgtool 6.0 from smart/messages/ServiceAdvertisement.msg.
+// Generated file, do not edit! Created by opp_msgtool 6.0 from smart/message/ServiceAdvertisement.msg.
 //
 
 #ifndef __VEINS_SERVICEADVERTISEMENT_M_H
@@ -29,12 +29,13 @@ class ServiceAdvertisment;
 namespace veins {
 
 /**
- * Class generated from <tt>smart/messages/ServiceAdvertisement.msg:30</tt> by opp_msgtool.
+ * Class generated from <tt>smart/message/ServiceAdvertisement.msg:30</tt> by opp_msgtool.
  * <pre>
  * packet ServiceAdvertisment extends veins::BaseFrame1609_4
  * {
  *     int targetChannel;
  *     string serviceDescription;
+ *     bool rsu;
  * }
  * </pre>
  */
@@ -43,6 +44,7 @@ class ServiceAdvertisment : public ::veins::BaseFrame1609_4
   protected:
     int targetChannel = 0;
     ::omnetpp::opp_string serviceDescription;
+    bool rsu = false;
 
   private:
     void copy(const ServiceAdvertisment& other);
@@ -64,6 +66,9 @@ class ServiceAdvertisment : public ::veins::BaseFrame1609_4
 
     virtual const char * getServiceDescription() const;
     virtual void setServiceDescription(const char * serviceDescription);
+
+    virtual bool getRsu() const;
+    virtual void setRsu(bool rsu);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const ServiceAdvertisment& obj) {obj.parsimPack(b);}

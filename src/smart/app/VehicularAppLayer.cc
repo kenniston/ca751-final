@@ -153,8 +153,8 @@ namespace veins {
 
         if (BasicSafetyMessage* bsm = dynamic_cast<BasicSafetyMessage*>(wsm)) {
             bsm->setSenderPos(curPosition);
-            bsm->setSenderSpeed(curSpeed);
-            bsm->setSenderRealId(appId);
+            bsm->setSenderGpsPos(curGPS);
+            bsm->setSenderId(appId);
             bsm->setPsid(-1);
             bsm->setChannelNumber(static_cast<int>(Channel::cch));
             bsm->addBitLength(beaconLengthBits);
@@ -195,6 +195,7 @@ namespace veins {
         ChannelMobilityPtrType const mobility = check_and_cast<ChannelMobilityPtrType>(obj);
         curPosition = mobility->getPositionAt(simTime());
         curSpeed = mobility->getCurrentSpeed();
+        curHeading = mobility->getCurrentDirection();
     }
 
     void VehicularAppLayer::handleParkingUpdate(cObject* obj)
@@ -226,24 +227,24 @@ namespace veins {
     void VehicularAppLayer::handleSelfMsg(cMessage* msg)
     {
         switch (msg->getKind()) {
-        case SEND_BEACON_EVT: {
-            BasicSafetyMessage* bsm = new BasicSafetyMessage();
-            populateWSM(bsm);
-            sendDown(bsm);
-            scheduleAt(simTime() + beaconInterval, sendBeaconEvt);
-            break;
-        }
-        case SEND_WSA_EVT: {
-            ServiceAdvertisment* wsa = new ServiceAdvertisment();
-            populateWSM(wsa);
-            sendDown(wsa);
-            scheduleAt(simTime() + wsaInterval, sendWSAEvt);
-            break;
-        }
-        default: {
-            if (msg) EV_WARN << "APP: Error: Got Self Message of unknown kind! Name: " << msg->getName() << endl;
-            break;
-        }
+            case SEND_BEACON_EVT: {
+                BasicSafetyMessage* bsm = new BasicSafetyMessage();
+                populateWSM(bsm);
+                sendDown(bsm);
+                scheduleAt(simTime() + beaconInterval, sendBeaconEvt);
+                break;
+            }
+            case SEND_WSA_EVT: {
+                ServiceAdvertisment* wsa = new ServiceAdvertisment();
+                populateWSM(wsa);
+                sendDown(wsa);
+                scheduleAt(simTime() + wsaInterval, sendWSAEvt);
+                break;
+            }
+            default: {
+                if (msg) EV_WARN << "APP: Error: Got Self Message of unknown kind! Name: " << msg->getName() << endl;
+                break;
+            }
         }
     }
 

@@ -62,7 +62,12 @@ simple VehicularAppLayer like IBaseApplLayer
         double attackProbability = default(0.03); //Attacker rate in the simulation.
         string outputPath = default("output"); //Output path to message files and analysis results.
         string simulationOutputFile = default("simulation.json"); //Output file for all simulation message.
-
+        
+        bool writeJsonVehicleMessages = default(false); //Serialize vehicle received messages in vehicle output file (Json format)
+        bool writeJsonGlobalMessages = default(false); //Serialize vehicle received messages in simulation file (Json format)
+        bool writeCsvVehicleMessages = default(false); //Serialize vehicle received messages in vehicle output file (CSV format)
+        bool writeCsvGlobalMessages = default(false); //Serialize vehicle received messages in simulation file (CSV format)
+        
     gates:
         input lowerLayerIn; // from mac layer
         output lowerLayerOut; // to mac layer

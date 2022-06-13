@@ -34,7 +34,7 @@
 Define_Module(VehicularApp);
 
 using namespace std;
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 using appType = AppType::VehicularAppType;
 using attackType = AttackType::VehicularAppAttackType;
 
@@ -61,6 +61,10 @@ void VehicularApp::initialize(int stage)
         char *dir = getcwd(buf, PATH_MAX);
         params.outputPath = string(dir) + "/" + par("outputPath").stdstringValue() + "/";
         params.simulationOutputFile = params.outputPath + par("simulationOutputFile").stdstringValue();
+        params.writeCsvGlobalMessages = par("writeCsvGlobalMessages");
+        params.writeCsvVehicleMessages = par("writeCsvVehicleMessages");
+        params.writeJsonGlobalMessages = par("writeJsonGlobalMessages");
+        params.writeJsonVehicleMessages = par("writeJsonVehicleMessages");
     } else if (stage == 1) {
         EV << par("appName").stringValue() << " initialized! " << std::endl;
         setup();
@@ -72,10 +76,18 @@ void VehicularApp::finish()
     VehicularAppLayer::finish();
 
     // Close all output streams for this application
-    messageJsonOutStream.close();
-    globalJsonMessageOutStream.close();
-    messageCsvOutStream.close();
-    globalCsvMessageOutStream.close();
+    if (messageJsonOutStream.is_open()) {
+        messageJsonOutStream.close();
+    }
+    if (globalJsonMessageOutStream.is_open()) {
+        globalJsonMessageOutStream.close();
+    }
+    if (messageCsvOutStream.is_open()) {
+        messageCsvOutStream.close();
+    }
+    if (globalCsvMessageOutStream.is_open()) {
+        globalCsvMessageOutStream.close();
+    }
 }
 
 /**
@@ -96,10 +108,18 @@ void VehicularApp::setup() {
     string csvMessageFileName = params.outputPath + "csv/bsm-app-" + std::to_string(appId) +  ".csv";
     string csvGlobalMessageFileName = params.outputPath + "csv/global-bsm.csv";
 
-    messageJsonOutStream.open(jsonMessageFileName, ios_base::app);
-    globalJsonMessageOutStream.open(jsonGlobalMessageFileName, ios_base::app);
-    messageCsvOutStream.open(csvMessageFileName, ios_base::app);
-    globalCsvMessageOutStream.open(csvGlobalMessageFileName, ios_base::app);
+    if (params.writeJsonVehicleMessages) {
+        messageJsonOutStream.open(jsonMessageFileName, ios_base::app);
+    }
+    if (params.writeJsonGlobalMessages) {
+        globalJsonMessageOutStream.open(jsonGlobalMessageFileName, ios_base::app);
+    }
+    if (params.writeCsvVehicleMessages) {
+        messageCsvOutStream.open(csvMessageFileName, ios_base::app);
+    }
+    if (params.writeCsvGlobalMessages) {
+        globalCsvMessageOutStream.open(csvGlobalMessageFileName, ios_base::app);
+    }
 
     // Evaluate the vehicle type on the initialization
     evaluateType();
@@ -121,25 +141,26 @@ void VehicularApp::setup() {
  */
 void VehicularApp::saveJsonBSM(BasicSafetyMessage* bsm)
 {
-    nlohmann::ordered_json j;
+    json j;
 
     // Receiver ID in the simulation
     j["receiver"] = appId;
 
-    // Sender ID in the simulation
-    j["sender"] = bsm->getSenderRealId();
-
     // Receiver position at current simulation time
-    Coord currPosition = mobility->getPositionAt(simTime());
-    j["position"] = to_string(currPosition.x) + "," + to_string(currPosition.y) + "," + to_string(currPosition.z);
+    j["position"] = to_string(curPosition.x) + "," + to_string(curPosition.y) + "," + to_string(curPosition.z);
 
     // Receiver speed
-    Coord currSpeed = mobility->getHostSpeed();
-    j["speed"] = to_string(currSpeed.x) + "," + to_string(currSpeed.y) + "," + to_string(currSpeed.z);
+    j["speed"] = to_string(curSpeed.x) + "," + to_string(curSpeed.y) + "," + to_string(curSpeed.z);
+
+    // Receiver heading
+    j["heading"] = to_string(curHeading.x) + "," + to_string(curHeading.y) + "," + to_string(curHeading.z);
 
     // Distance between sender and receiver vehicles
-    double distance = currPosition.distance(bsm->getSenderPos());
+    double distance = curPosition.distance(bsm->getSenderPos());
     j["distance"] = distance;
+
+    // Sender ID in the simulation
+    j["sender"] = bsm->getSenderId();
 
     // Sender position
     Coord senderPosition = bsm->getSenderPos();
@@ -149,16 +170,15 @@ void VehicularApp::saveJsonBSM(BasicSafetyMessage* bsm)
     Coord senderSpeed = bsm->getSenderSpeed();
     j["senderSpeed"] = to_string(senderSpeed.x) + "," + to_string(senderSpeed.y) + "," + to_string(senderSpeed.z);
 
-    // Sender acceleration
-    Coord senderAccel = bsm->getSenderAccel();
-    j["senderAccel"] = to_string(senderAccel.x) + "," + to_string(senderAccel.y) + "," + to_string(senderAccel.z);
-
-    // Sender acceleration
+    // Sender heading
     Coord senderHeading = bsm->getSenderHeading();
     j["senderHeading"] = to_string(senderHeading.x) + "," + to_string(senderHeading.y) + "," + to_string(senderHeading.z);
 
+    // Sender acceleration
+    j["senderAccel"] = bsm->getSenderAccel();
+
     // Sender GPS Coordinates
-    Coord senderGPSPos = bsm->getSenderGpsCoordinates();
+    Coord senderGPSPos = bsm->getSenderGpsPos();
     j["senderGPSPos"] = to_string(senderGPSPos.x) + "," + to_string(senderGPSPos.y) + "," + to_string(senderGPSPos.z);
 
     // Sender Attacker Type
@@ -167,8 +187,12 @@ void VehicularApp::saveJsonBSM(BasicSafetyMessage* bsm)
     // Sender Type - Genuine or Attacker
     j["senderType"] = bsm->getSenderType();
 
-    messageJsonOutStream << j << endl;
-    globalJsonMessageOutStream << j << endl;
+    if (params.writeJsonVehicleMessages) {
+        messageJsonOutStream << j << endl;
+    }
+    if (params.writeJsonGlobalMessages) {
+        globalJsonMessageOutStream << j << endl;
+    }
 }
 
 /**
@@ -189,6 +213,21 @@ void VehicularApp::saveCsvBSM(BasicSafetyMessage* bsm)
 void VehicularApp::populateWSM(BaseFrame1609_4* wsm, LAddress::L2Type rcvId, int serial) {
     VehicularAppLayer::populateWSM(wsm, rcvId, serial);
 
+    if (BasicSafetyMessage* bsm = dynamic_cast<BasicSafetyMessage*>(wsm)) {
+        // Configure GPS coordinates, vehicle acceleration and speed
+        std::pair<double, double> curLonLat = traci->getLonLat(curPosition);
+        curGPS = Coord(curLonLat.first, curLonLat.second);
+        curAccel = traciVehicle->getAcceleration();
+        bsm->setSenderSpeed(curSpeed);
+
+        // Configure the vehicle type and attack type in the beacon message
+        bsm->setSenderType(vAppType);
+        bsm->setSenderAttackType(vAppAttackType);
+
+        // Configure vehicule heading and acceleration
+        bsm->setSenderHeading(curHeading);
+        bsm->setSenderAccel(curAccel);
+    }
 }
 
 /**
@@ -200,7 +239,13 @@ void VehicularApp::populateWSM(BaseFrame1609_4* wsm, LAddress::L2Type rcvId, int
  */
 void VehicularApp::onBSM(BasicSafetyMessage* bsm)
 {
-    saveJsonBSM(bsm);
+    if (params.writeJsonVehicleMessages || params.writeJsonGlobalMessages) {
+        saveJsonBSM(bsm);
+    }
+
+    if (params.writeCsvVehicleMessages || params.writeCsvGlobalMessages) {
+        saveCsvBSM(bsm);
+    }
 
     if (!hasStopped) {
         traciVehicle->setSpeedMode(0x1f);

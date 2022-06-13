@@ -30,4 +30,5 @@ namespace veins;
 packet ServiceAdvertisment extends veins::BaseFrame1609_4 {
     int targetChannel;
     string serviceDescription;
+    bool rsu;
 }

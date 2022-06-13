@@ -44,7 +44,13 @@ using namespace omnetpp;
  */
 class VEINS_API VehicularRSU11p: public VehicularAppLayer {
 protected:
+    /** @brief Handle self messages such as timer or other kinds of self messages */
+    void handleSelfMsg(cMessage* msg) override;
+
+    /** @brief The application has received a DATA message from another car or RSU */
     void onWSM(BaseFrame1609_4* wsm) override;
+
+    /** @brief The application has received a ADVERTISEMENT message from another car or RSU */
     void onWSA(ServiceAdvertisment* wsa) override;
 };
 

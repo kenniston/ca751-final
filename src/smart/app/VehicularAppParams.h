@@ -26,6 +26,8 @@
 #ifndef APP_VEHICULARAPPPARAMS_H_
 #define APP_VEHICULARAPPPARAMS_H_
 
+using namespace std;
+
 /**
  * @brief
  * Vehicular application parameters.
@@ -35,17 +37,29 @@
  */
 class VehicularAppParams {
 public:
-    /* Attack start time in seconds */
+    /* @brief Attack start time in seconds */
     double attackTime;
 
-    /* Attacker rate in the simulation */
+    /* @brief Attacker rate in the simulation */
     double attackProbability;
 
-    /* Output path for messages and result analysis */
-    std::string outputPath;
+    /* @brief Output path for messages and result analysis */
+    string outputPath;
 
-    /* Global filename for simulation messages */
-    std::string simulationOutputFile;
+    /* @brief Global filename for simulation messages */
+    string simulationOutputFile;
+
+    /* @brief Serialize vehicle received messages in vehicle output file (Json format) */
+    bool writeJsonVehicleMessages;
+
+    /* @brief Serialize vehicle received messages in simulation file (Json format) */
+    bool writeJsonGlobalMessages;
+
+    /* @brief Serialize vehicle received messages in vehicle output file (CSV format) */
+    bool writeCsvVehicleMessages;
+
+    /* @brief Serialize vehicle received messages in simulation file (CSV format) */
+    bool writeCsvGlobalMessages;
 };
 
 #endif /* APP_VEHICULARAPPPARAMS_H_ */

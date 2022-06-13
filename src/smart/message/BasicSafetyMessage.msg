@@ -30,19 +30,16 @@ import veins.modules.messages.BaseFrame1609_4;
 namespace veins;
 
 class BasicSafetyMessage extends BaseFrame1609_4 {
+    LAddress::L2Type senderId;
     Coord senderPos;
-    Coord senderPosConfidence;
     Coord senderSpeed;
-    Coord senderSpeedConfidence;
     Coord senderHeading;
-    Coord senderHeadingConfidence;
-    Coord senderAccel;
-    Coord senderAccelConfidence;
+    Coord senderGpsPos;
+    double senderAccel;
     double senderWidth;
     double senderLength;
     int senderType;
     int senderAttackType;
-    Coord senderGpsCoordinates;
-    LAddress::L2Type senderRealId;
     unsigned long senderPseudonym;
+    bool rsu;
 }

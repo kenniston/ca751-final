@@ -177,61 +177,62 @@ BasicSafetyMessage& BasicSafetyMessage::operator=(const BasicSafetyMessage& othe
 
 void BasicSafetyMessage::copy(const BasicSafetyMessage& other)
 {
+    this->senderId = other.senderId;
     this->senderPos = other.senderPos;
-    this->senderPosConfidence = other.senderPosConfidence;
     this->senderSpeed = other.senderSpeed;
-    this->senderSpeedConfidence = other.senderSpeedConfidence;
     this->senderHeading = other.senderHeading;
-    this->senderHeadingConfidence = other.senderHeadingConfidence;
+    this->senderGpsPos = other.senderGpsPos;
     this->senderAccel = other.senderAccel;
-    this->senderAccelConfidence = other.senderAccelConfidence;
     this->senderWidth = other.senderWidth;
     this->senderLength = other.senderLength;
     this->senderType = other.senderType;
     this->senderAttackType = other.senderAttackType;
-    this->senderGpsCoordinates = other.senderGpsCoordinates;
-    this->senderRealId = other.senderRealId;
     this->senderPseudonym = other.senderPseudonym;
+    this->rsu = other.rsu;
 }
 
 void BasicSafetyMessage::parsimPack(omnetpp::cCommBuffer *b) const
 {
     ::veins::BaseFrame1609_4::parsimPack(b);
+    doParsimPacking(b,this->senderId);
     doParsimPacking(b,this->senderPos);
-    doParsimPacking(b,this->senderPosConfidence);
     doParsimPacking(b,this->senderSpeed);
-    doParsimPacking(b,this->senderSpeedConfidence);
     doParsimPacking(b,this->senderHeading);
-    doParsimPacking(b,this->senderHeadingConfidence);
+    doParsimPacking(b,this->senderGpsPos);
     doParsimPacking(b,this->senderAccel);
-    doParsimPacking(b,this->senderAccelConfidence);
     doParsimPacking(b,this->senderWidth);
     doParsimPacking(b,this->senderLength);
     doParsimPacking(b,this->senderType);
     doParsimPacking(b,this->senderAttackType);
-    doParsimPacking(b,this->senderGpsCoordinates);
-    doParsimPacking(b,this->senderRealId);
     doParsimPacking(b,this->senderPseudonym);
+    doParsimPacking(b,this->rsu);
 }
 
 void BasicSafetyMessage::parsimUnpack(omnetpp::cCommBuffer *b)
 {
     ::veins::BaseFrame1609_4::parsimUnpack(b);
+    doParsimUnpacking(b,this->senderId);
     doParsimUnpacking(b,this->senderPos);
-    doParsimUnpacking(b,this->senderPosConfidence);
     doParsimUnpacking(b,this->senderSpeed);
-    doParsimUnpacking(b,this->senderSpeedConfidence);
     doParsimUnpacking(b,this->senderHeading);
-    doParsimUnpacking(b,this->senderHeadingConfidence);
+    doParsimUnpacking(b,this->senderGpsPos);
     doParsimUnpacking(b,this->senderAccel);
-    doParsimUnpacking(b,this->senderAccelConfidence);
     doParsimUnpacking(b,this->senderWidth);
     doParsimUnpacking(b,this->senderLength);
     doParsimUnpacking(b,this->senderType);
     doParsimUnpacking(b,this->senderAttackType);
-    doParsimUnpacking(b,this->senderGpsCoordinates);
-    doParsimUnpacking(b,this->senderRealId);
     doParsimUnpacking(b,this->senderPseudonym);
+    doParsimUnpacking(b,this->rsu);
+}
+
+const LAddress::L2Type& BasicSafetyMessage::getSenderId() const
+{
+    return this->senderId;
+}
+
+void BasicSafetyMessage::setSenderId(const LAddress::L2Type& senderId)
+{
+    this->senderId = senderId;
 }
 
 const Coord& BasicSafetyMessage::getSenderPos() const
@@ -244,16 +245,6 @@ void BasicSafetyMessage::setSenderPos(const Coord& senderPos)
     this->senderPos = senderPos;
 }
 
-const Coord& BasicSafetyMessage::getSenderPosConfidence() const
-{
-    return this->senderPosConfidence;
-}
-
-void BasicSafetyMessage::setSenderPosConfidence(const Coord& senderPosConfidence)
-{
-    this->senderPosConfidence = senderPosConfidence;
-}
-
 const Coord& BasicSafetyMessage::getSenderSpeed() const
 {
     return this->senderSpeed;
@@ -262,16 +253,6 @@ const Coord& BasicSafetyMessage::getSenderSpeed() const
 void BasicSafetyMessage::setSenderSpeed(const Coord& senderSpeed)
 {
     this->senderSpeed = senderSpeed;
-}
-
-const Coord& BasicSafetyMessage::getSenderSpeedConfidence() const
-{
-    return this->senderSpeedConfidence;
-}
-
-void BasicSafetyMessage::setSenderSpeedConfidence(const Coord& senderSpeedConfidence)
-{
-    this->senderSpeedConfidence = senderSpeedConfidence;
 }
 
 const Coord& BasicSafetyMessage::getSenderHeading() const
@@ -284,34 +265,24 @@ void BasicSafetyMessage::setSenderHeading(const Coord& senderHeading)
     this->senderHeading = senderHeading;
 }
 
-const Coord& BasicSafetyMessage::getSenderHeadingConfidence() const
+const Coord& BasicSafetyMessage::getSenderGpsPos() const
 {
-    return this->senderHeadingConfidence;
+    return this->senderGpsPos;
 }
 
-void BasicSafetyMessage::setSenderHeadingConfidence(const Coord& senderHeadingConfidence)
+void BasicSafetyMessage::setSenderGpsPos(const Coord& senderGpsPos)
 {
-    this->senderHeadingConfidence = senderHeadingConfidence;
+    this->senderGpsPos = senderGpsPos;
 }
 
-const Coord& BasicSafetyMessage::getSenderAccel() const
+double BasicSafetyMessage::getSenderAccel() const
 {
     return this->senderAccel;
 }
 
-void BasicSafetyMessage::setSenderAccel(const Coord& senderAccel)
+void BasicSafetyMessage::setSenderAccel(double senderAccel)
 {
     this->senderAccel = senderAccel;
-}
-
-const Coord& BasicSafetyMessage::getSenderAccelConfidence() const
-{
-    return this->senderAccelConfidence;
-}
-
-void BasicSafetyMessage::setSenderAccelConfidence(const Coord& senderAccelConfidence)
-{
-    this->senderAccelConfidence = senderAccelConfidence;
 }
 
 double BasicSafetyMessage::getSenderWidth() const
@@ -354,26 +325,6 @@ void BasicSafetyMessage::setSenderAttackType(int senderAttackType)
     this->senderAttackType = senderAttackType;
 }
 
-const Coord& BasicSafetyMessage::getSenderGpsCoordinates() const
-{
-    return this->senderGpsCoordinates;
-}
-
-void BasicSafetyMessage::setSenderGpsCoordinates(const Coord& senderGpsCoordinates)
-{
-    this->senderGpsCoordinates = senderGpsCoordinates;
-}
-
-const LAddress::L2Type& BasicSafetyMessage::getSenderRealId() const
-{
-    return this->senderRealId;
-}
-
-void BasicSafetyMessage::setSenderRealId(const LAddress::L2Type& senderRealId)
-{
-    this->senderRealId = senderRealId;
-}
-
 unsigned long BasicSafetyMessage::getSenderPseudonym() const
 {
     return this->senderPseudonym;
@@ -384,26 +335,33 @@ void BasicSafetyMessage::setSenderPseudonym(unsigned long senderPseudonym)
     this->senderPseudonym = senderPseudonym;
 }
 
+bool BasicSafetyMessage::getRsu() const
+{
+    return this->rsu;
+}
+
+void BasicSafetyMessage::setRsu(bool rsu)
+{
+    this->rsu = rsu;
+}
+
 class BasicSafetyMessageDescriptor : public omnetpp::cClassDescriptor
 {
   private:
     mutable const char **propertyNames;
     enum FieldConstants {
+        FIELD_senderId,
         FIELD_senderPos,
-        FIELD_senderPosConfidence,
         FIELD_senderSpeed,
-        FIELD_senderSpeedConfidence,
         FIELD_senderHeading,
-        FIELD_senderHeadingConfidence,
+        FIELD_senderGpsPos,
         FIELD_senderAccel,
-        FIELD_senderAccelConfidence,
         FIELD_senderWidth,
         FIELD_senderLength,
         FIELD_senderType,
         FIELD_senderAttackType,
-        FIELD_senderGpsCoordinates,
-        FIELD_senderRealId,
         FIELD_senderPseudonym,
+        FIELD_rsu,
     };
   public:
     BasicSafetyMessageDescriptor();
@@ -470,7 +428,7 @@ const char *BasicSafetyMessageDescriptor::getProperty(const char *propertyName) 
 int BasicSafetyMessageDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
-    return base ? 15+base->getFieldCount() : 15;
+    return base ? 12+base->getFieldCount() : 12;
 }
 
 unsigned int BasicSafetyMessageDescriptor::getFieldTypeFlags(int field) const
@@ -482,23 +440,20 @@ unsigned int BasicSafetyMessageDescriptor::getFieldTypeFlags(int field) const
         field -= base->getFieldCount();
     }
     static unsigned int fieldTypeFlags[] = {
+        0,    // FIELD_senderId
         0,    // FIELD_senderPos
-        0,    // FIELD_senderPosConfidence
         0,    // FIELD_senderSpeed
-        0,    // FIELD_senderSpeedConfidence
         0,    // FIELD_senderHeading
-        0,    // FIELD_senderHeadingConfidence
-        0,    // FIELD_senderAccel
-        0,    // FIELD_senderAccelConfidence
+        0,    // FIELD_senderGpsPos
+        FD_ISEDITABLE,    // FIELD_senderAccel
         FD_ISEDITABLE,    // FIELD_senderWidth
         FD_ISEDITABLE,    // FIELD_senderLength
         FD_ISEDITABLE,    // FIELD_senderType
         FD_ISEDITABLE,    // FIELD_senderAttackType
-        0,    // FIELD_senderGpsCoordinates
-        0,    // FIELD_senderRealId
         FD_ISEDITABLE,    // FIELD_senderPseudonym
+        FD_ISEDITABLE,    // FIELD_rsu
     };
-    return (field >= 0 && field < 15) ? fieldTypeFlags[field] : 0;
+    return (field >= 0 && field < 12) ? fieldTypeFlags[field] : 0;
 }
 
 const char *BasicSafetyMessageDescriptor::getFieldName(int field) const
@@ -510,44 +465,38 @@ const char *BasicSafetyMessageDescriptor::getFieldName(int field) const
         field -= base->getFieldCount();
     }
     static const char *fieldNames[] = {
+        "senderId",
         "senderPos",
-        "senderPosConfidence",
         "senderSpeed",
-        "senderSpeedConfidence",
         "senderHeading",
-        "senderHeadingConfidence",
+        "senderGpsPos",
         "senderAccel",
-        "senderAccelConfidence",
         "senderWidth",
         "senderLength",
         "senderType",
         "senderAttackType",
-        "senderGpsCoordinates",
-        "senderRealId",
         "senderPseudonym",
+        "rsu",
     };
-    return (field >= 0 && field < 15) ? fieldNames[field] : nullptr;
+    return (field >= 0 && field < 12) ? fieldNames[field] : nullptr;
 }
 
 int BasicSafetyMessageDescriptor::findField(const char *fieldName) const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     int baseIndex = base ? base->getFieldCount() : 0;
-    if (strcmp(fieldName, "senderPos") == 0) return baseIndex + 0;
-    if (strcmp(fieldName, "senderPosConfidence") == 0) return baseIndex + 1;
+    if (strcmp(fieldName, "senderId") == 0) return baseIndex + 0;
+    if (strcmp(fieldName, "senderPos") == 0) return baseIndex + 1;
     if (strcmp(fieldName, "senderSpeed") == 0) return baseIndex + 2;
-    if (strcmp(fieldName, "senderSpeedConfidence") == 0) return baseIndex + 3;
-    if (strcmp(fieldName, "senderHeading") == 0) return baseIndex + 4;
-    if (strcmp(fieldName, "senderHeadingConfidence") == 0) return baseIndex + 5;
-    if (strcmp(fieldName, "senderAccel") == 0) return baseIndex + 6;
-    if (strcmp(fieldName, "senderAccelConfidence") == 0) return baseIndex + 7;
-    if (strcmp(fieldName, "senderWidth") == 0) return baseIndex + 8;
-    if (strcmp(fieldName, "senderLength") == 0) return baseIndex + 9;
-    if (strcmp(fieldName, "senderType") == 0) return baseIndex + 10;
-    if (strcmp(fieldName, "senderAttackType") == 0) return baseIndex + 11;
-    if (strcmp(fieldName, "senderGpsCoordinates") == 0) return baseIndex + 12;
-    if (strcmp(fieldName, "senderRealId") == 0) return baseIndex + 13;
-    if (strcmp(fieldName, "senderPseudonym") == 0) return baseIndex + 14;
+    if (strcmp(fieldName, "senderHeading") == 0) return baseIndex + 3;
+    if (strcmp(fieldName, "senderGpsPos") == 0) return baseIndex + 4;
+    if (strcmp(fieldName, "senderAccel") == 0) return baseIndex + 5;
+    if (strcmp(fieldName, "senderWidth") == 0) return baseIndex + 6;
+    if (strcmp(fieldName, "senderLength") == 0) return baseIndex + 7;
+    if (strcmp(fieldName, "senderType") == 0) return baseIndex + 8;
+    if (strcmp(fieldName, "senderAttackType") == 0) return baseIndex + 9;
+    if (strcmp(fieldName, "senderPseudonym") == 0) return baseIndex + 10;
+    if (strcmp(fieldName, "rsu") == 0) return baseIndex + 11;
     return base ? base->findField(fieldName) : -1;
 }
 
@@ -560,23 +509,20 @@ const char *BasicSafetyMessageDescriptor::getFieldTypeString(int field) const
         field -= base->getFieldCount();
     }
     static const char *fieldTypeStrings[] = {
+        "veins::LAddress::L2Type",    // FIELD_senderId
         "veins::Coord",    // FIELD_senderPos
-        "veins::Coord",    // FIELD_senderPosConfidence
         "veins::Coord",    // FIELD_senderSpeed
-        "veins::Coord",    // FIELD_senderSpeedConfidence
         "veins::Coord",    // FIELD_senderHeading
-        "veins::Coord",    // FIELD_senderHeadingConfidence
-        "veins::Coord",    // FIELD_senderAccel
-        "veins::Coord",    // FIELD_senderAccelConfidence
+        "veins::Coord",    // FIELD_senderGpsPos
+        "double",    // FIELD_senderAccel
         "double",    // FIELD_senderWidth
         "double",    // FIELD_senderLength
         "int",    // FIELD_senderType
         "int",    // FIELD_senderAttackType
-        "veins::Coord",    // FIELD_senderGpsCoordinates
-        "veins::LAddress::L2Type",    // FIELD_senderRealId
         "unsigned long",    // FIELD_senderPseudonym
+        "bool",    // FIELD_rsu
     };
-    return (field >= 0 && field < 15) ? fieldTypeStrings[field] : nullptr;
+    return (field >= 0 && field < 12) ? fieldTypeStrings[field] : nullptr;
 }
 
 const char **BasicSafetyMessageDescriptor::getFieldPropertyNames(int field) const
@@ -659,21 +605,18 @@ std::string BasicSafetyMessageDescriptor::getFieldValueAsString(omnetpp::any_ptr
     }
     BasicSafetyMessage *pp = omnetpp::fromAnyPtr<BasicSafetyMessage>(object); (void)pp;
     switch (field) {
+        case FIELD_senderId: return "";
         case FIELD_senderPos: return "";
-        case FIELD_senderPosConfidence: return "";
         case FIELD_senderSpeed: return "";
-        case FIELD_senderSpeedConfidence: return "";
         case FIELD_senderHeading: return "";
-        case FIELD_senderHeadingConfidence: return "";
-        case FIELD_senderAccel: return "";
-        case FIELD_senderAccelConfidence: return "";
+        case FIELD_senderGpsPos: return "";
+        case FIELD_senderAccel: return double2string(pp->getSenderAccel());
         case FIELD_senderWidth: return double2string(pp->getSenderWidth());
         case FIELD_senderLength: return double2string(pp->getSenderLength());
         case FIELD_senderType: return long2string(pp->getSenderType());
         case FIELD_senderAttackType: return long2string(pp->getSenderAttackType());
-        case FIELD_senderGpsCoordinates: return "";
-        case FIELD_senderRealId: return "";
         case FIELD_senderPseudonym: return ulong2string(pp->getSenderPseudonym());
+        case FIELD_rsu: return bool2string(pp->getRsu());
         default: return "";
     }
 }
@@ -690,11 +633,13 @@ void BasicSafetyMessageDescriptor::setFieldValueAsString(omnetpp::any_ptr object
     }
     BasicSafetyMessage *pp = omnetpp::fromAnyPtr<BasicSafetyMessage>(object); (void)pp;
     switch (field) {
+        case FIELD_senderAccel: pp->setSenderAccel(string2double(value)); break;
         case FIELD_senderWidth: pp->setSenderWidth(string2double(value)); break;
         case FIELD_senderLength: pp->setSenderLength(string2double(value)); break;
         case FIELD_senderType: pp->setSenderType(string2long(value)); break;
         case FIELD_senderAttackType: pp->setSenderAttackType(string2long(value)); break;
         case FIELD_senderPseudonym: pp->setSenderPseudonym(string2ulong(value)); break;
+        case FIELD_rsu: pp->setRsu(string2bool(value)); break;
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'BasicSafetyMessage'", field);
     }
 }
@@ -709,21 +654,18 @@ omnetpp::cValue BasicSafetyMessageDescriptor::getFieldValue(omnetpp::any_ptr obj
     }
     BasicSafetyMessage *pp = omnetpp::fromAnyPtr<BasicSafetyMessage>(object); (void)pp;
     switch (field) {
+        case FIELD_senderId: return omnetpp::toAnyPtr(&pp->getSenderId()); break;
         case FIELD_senderPos: return omnetpp::toAnyPtr(&pp->getSenderPos()); break;
-        case FIELD_senderPosConfidence: return omnetpp::toAnyPtr(&pp->getSenderPosConfidence()); break;
         case FIELD_senderSpeed: return omnetpp::toAnyPtr(&pp->getSenderSpeed()); break;
-        case FIELD_senderSpeedConfidence: return omnetpp::toAnyPtr(&pp->getSenderSpeedConfidence()); break;
         case FIELD_senderHeading: return omnetpp::toAnyPtr(&pp->getSenderHeading()); break;
-        case FIELD_senderHeadingConfidence: return omnetpp::toAnyPtr(&pp->getSenderHeadingConfidence()); break;
-        case FIELD_senderAccel: return omnetpp::toAnyPtr(&pp->getSenderAccel()); break;
-        case FIELD_senderAccelConfidence: return omnetpp::toAnyPtr(&pp->getSenderAccelConfidence()); break;
+        case FIELD_senderGpsPos: return omnetpp::toAnyPtr(&pp->getSenderGpsPos()); break;
+        case FIELD_senderAccel: return pp->getSenderAccel();
         case FIELD_senderWidth: return pp->getSenderWidth();
         case FIELD_senderLength: return pp->getSenderLength();
         case FIELD_senderType: return pp->getSenderType();
         case FIELD_senderAttackType: return pp->getSenderAttackType();
-        case FIELD_senderGpsCoordinates: return omnetpp::toAnyPtr(&pp->getSenderGpsCoordinates()); break;
-        case FIELD_senderRealId: return omnetpp::toAnyPtr(&pp->getSenderRealId()); break;
         case FIELD_senderPseudonym: return omnetpp::checked_int_cast<omnetpp::intval_t>(pp->getSenderPseudonym());
+        case FIELD_rsu: return pp->getRsu();
         default: throw omnetpp::cRuntimeError("Cannot return field %d of class 'BasicSafetyMessage' as cValue -- field index out of range?", field);
     }
 }
@@ -740,11 +682,13 @@ void BasicSafetyMessageDescriptor::setFieldValue(omnetpp::any_ptr object, int fi
     }
     BasicSafetyMessage *pp = omnetpp::fromAnyPtr<BasicSafetyMessage>(object); (void)pp;
     switch (field) {
+        case FIELD_senderAccel: pp->setSenderAccel(value.doubleValue()); break;
         case FIELD_senderWidth: pp->setSenderWidth(value.doubleValue()); break;
         case FIELD_senderLength: pp->setSenderLength(value.doubleValue()); break;
         case FIELD_senderType: pp->setSenderType(omnetpp::checked_int_cast<int>(value.intValue())); break;
         case FIELD_senderAttackType: pp->setSenderAttackType(omnetpp::checked_int_cast<int>(value.intValue())); break;
         case FIELD_senderPseudonym: pp->setSenderPseudonym(omnetpp::checked_int_cast<unsigned long>(value.intValue())); break;
+        case FIELD_rsu: pp->setRsu(value.boolValue()); break;
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'BasicSafetyMessage'", field);
     }
 }
@@ -772,16 +716,11 @@ omnetpp::any_ptr BasicSafetyMessageDescriptor::getFieldStructValuePointer(omnetp
     }
     BasicSafetyMessage *pp = omnetpp::fromAnyPtr<BasicSafetyMessage>(object); (void)pp;
     switch (field) {
+        case FIELD_senderId: return omnetpp::toAnyPtr(&pp->getSenderId()); break;
         case FIELD_senderPos: return omnetpp::toAnyPtr(&pp->getSenderPos()); break;
-        case FIELD_senderPosConfidence: return omnetpp::toAnyPtr(&pp->getSenderPosConfidence()); break;
         case FIELD_senderSpeed: return omnetpp::toAnyPtr(&pp->getSenderSpeed()); break;
-        case FIELD_senderSpeedConfidence: return omnetpp::toAnyPtr(&pp->getSenderSpeedConfidence()); break;
         case FIELD_senderHeading: return omnetpp::toAnyPtr(&pp->getSenderHeading()); break;
-        case FIELD_senderHeadingConfidence: return omnetpp::toAnyPtr(&pp->getSenderHeadingConfidence()); break;
-        case FIELD_senderAccel: return omnetpp::toAnyPtr(&pp->getSenderAccel()); break;
-        case FIELD_senderAccelConfidence: return omnetpp::toAnyPtr(&pp->getSenderAccelConfidence()); break;
-        case FIELD_senderGpsCoordinates: return omnetpp::toAnyPtr(&pp->getSenderGpsCoordinates()); break;
-        case FIELD_senderRealId: return omnetpp::toAnyPtr(&pp->getSenderRealId()); break;
+        case FIELD_senderGpsPos: return omnetpp::toAnyPtr(&pp->getSenderGpsPos()); break;
         default: return omnetpp::any_ptr(nullptr);
     }
 }

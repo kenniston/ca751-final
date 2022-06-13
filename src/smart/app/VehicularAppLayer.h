@@ -165,6 +165,9 @@ namespace veins {
         /* state of the vehicle */
         Coord curPosition;
         Coord curSpeed;
+        Coord curHeading;
+        Coord curGPS;
+        double curAccel;
         int mySCH;
 
         /* stats */

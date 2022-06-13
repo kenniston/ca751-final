@@ -37,42 +37,36 @@ namespace veins {
  * <pre>
  * class BasicSafetyMessage extends BaseFrame1609_4
  * {
+ *     LAddress::L2Type senderId;
  *     Coord senderPos;
- *     Coord senderPosConfidence;
  *     Coord senderSpeed;
- *     Coord senderSpeedConfidence;
  *     Coord senderHeading;
- *     Coord senderHeadingConfidence;
- *     Coord senderAccel;
- *     Coord senderAccelConfidence;
+ *     Coord senderGpsPos;
+ *     double senderAccel;
  *     double senderWidth;
  *     double senderLength;
  *     int senderType;
  *     int senderAttackType;
- *     Coord senderGpsCoordinates;
- *     LAddress::L2Type senderRealId;
  *     unsigned long senderPseudonym;
+ *     bool rsu;
  * }
  * </pre>
  */
 class BasicSafetyMessage : public ::veins::BaseFrame1609_4
 {
   protected:
+    LAddress::L2Type senderId;
     Coord senderPos;
-    Coord senderPosConfidence;
     Coord senderSpeed;
-    Coord senderSpeedConfidence;
     Coord senderHeading;
-    Coord senderHeadingConfidence;
-    Coord senderAccel;
-    Coord senderAccelConfidence;
+    Coord senderGpsPos;
+    double senderAccel = 0;
     double senderWidth = 0;
     double senderLength = 0;
     int senderType = 0;
     int senderAttackType = 0;
-    Coord senderGpsCoordinates;
-    LAddress::L2Type senderRealId;
     unsigned long senderPseudonym = 0;
+    bool rsu = false;
 
   private:
     void copy(const BasicSafetyMessage& other);
@@ -89,37 +83,28 @@ class BasicSafetyMessage : public ::veins::BaseFrame1609_4
     virtual void parsimPack(omnetpp::cCommBuffer *b) const override;
     virtual void parsimUnpack(omnetpp::cCommBuffer *b) override;
 
+    virtual const LAddress::L2Type& getSenderId() const;
+    virtual LAddress::L2Type& getSenderIdForUpdate() { return const_cast<LAddress::L2Type&>(const_cast<BasicSafetyMessage*>(this)->getSenderId());}
+    virtual void setSenderId(const LAddress::L2Type& senderId);
+
     virtual const Coord& getSenderPos() const;
     virtual Coord& getSenderPosForUpdate() { return const_cast<Coord&>(const_cast<BasicSafetyMessage*>(this)->getSenderPos());}
     virtual void setSenderPos(const Coord& senderPos);
-
-    virtual const Coord& getSenderPosConfidence() const;
-    virtual Coord& getSenderPosConfidenceForUpdate() { return const_cast<Coord&>(const_cast<BasicSafetyMessage*>(this)->getSenderPosConfidence());}
-    virtual void setSenderPosConfidence(const Coord& senderPosConfidence);
 
     virtual const Coord& getSenderSpeed() const;
     virtual Coord& getSenderSpeedForUpdate() { return const_cast<Coord&>(const_cast<BasicSafetyMessage*>(this)->getSenderSpeed());}
     virtual void setSenderSpeed(const Coord& senderSpeed);
 
-    virtual const Coord& getSenderSpeedConfidence() const;
-    virtual Coord& getSenderSpeedConfidenceForUpdate() { return const_cast<Coord&>(const_cast<BasicSafetyMessage*>(this)->getSenderSpeedConfidence());}
-    virtual void setSenderSpeedConfidence(const Coord& senderSpeedConfidence);
-
     virtual const Coord& getSenderHeading() const;
     virtual Coord& getSenderHeadingForUpdate() { return const_cast<Coord&>(const_cast<BasicSafetyMessage*>(this)->getSenderHeading());}
     virtual void setSenderHeading(const Coord& senderHeading);
 
-    virtual const Coord& getSenderHeadingConfidence() const;
-    virtual Coord& getSenderHeadingConfidenceForUpdate() { return const_cast<Coord&>(const_cast<BasicSafetyMessage*>(this)->getSenderHeadingConfidence());}
-    virtual void setSenderHeadingConfidence(const Coord& senderHeadingConfidence);
+    virtual const Coord& getSenderGpsPos() const;
+    virtual Coord& getSenderGpsPosForUpdate() { return const_cast<Coord&>(const_cast<BasicSafetyMessage*>(this)->getSenderGpsPos());}
+    virtual void setSenderGpsPos(const Coord& senderGpsPos);
 
-    virtual const Coord& getSenderAccel() const;
-    virtual Coord& getSenderAccelForUpdate() { return const_cast<Coord&>(const_cast<BasicSafetyMessage*>(this)->getSenderAccel());}
-    virtual void setSenderAccel(const Coord& senderAccel);
-
-    virtual const Coord& getSenderAccelConfidence() const;
-    virtual Coord& getSenderAccelConfidenceForUpdate() { return const_cast<Coord&>(const_cast<BasicSafetyMessage*>(this)->getSenderAccelConfidence());}
-    virtual void setSenderAccelConfidence(const Coord& senderAccelConfidence);
+    virtual double getSenderAccel() const;
+    virtual void setSenderAccel(double senderAccel);
 
     virtual double getSenderWidth() const;
     virtual void setSenderWidth(double senderWidth);
@@ -133,16 +118,11 @@ class BasicSafetyMessage : public ::veins::BaseFrame1609_4
     virtual int getSenderAttackType() const;
     virtual void setSenderAttackType(int senderAttackType);
 
-    virtual const Coord& getSenderGpsCoordinates() const;
-    virtual Coord& getSenderGpsCoordinatesForUpdate() { return const_cast<Coord&>(const_cast<BasicSafetyMessage*>(this)->getSenderGpsCoordinates());}
-    virtual void setSenderGpsCoordinates(const Coord& senderGpsCoordinates);
-
-    virtual const LAddress::L2Type& getSenderRealId() const;
-    virtual LAddress::L2Type& getSenderRealIdForUpdate() { return const_cast<LAddress::L2Type&>(const_cast<BasicSafetyMessage*>(this)->getSenderRealId());}
-    virtual void setSenderRealId(const LAddress::L2Type& senderRealId);
-
     virtual unsigned long getSenderPseudonym() const;
     virtual void setSenderPseudonym(unsigned long senderPseudonym);
+
+    virtual bool getRsu() const;
+    virtual void setRsu(bool rsu);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const BasicSafetyMessage& obj) {obj.parsimPack(b);}
