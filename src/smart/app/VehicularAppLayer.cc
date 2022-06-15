@@ -45,6 +45,8 @@ namespace veins {
                 traciVehicle = nullptr;
             }
 
+            world = FindModule<BaseWorldUtility*>::findGlobalModule();
+
             annotations = AnnotationManagerAccess().getIfExists();
             ASSERT(annotations);
 

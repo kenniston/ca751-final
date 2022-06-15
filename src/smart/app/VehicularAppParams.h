@@ -60,6 +60,15 @@ public:
 
     /* @brief Serialize vehicle received messages in simulation file (CSV format) */
     bool writeCsvGlobalMessages;
+
+    /* @brief Constant Position Attack - X axis position */
+    double attackConstantX;
+
+    /* @brief Constant Position Attack - Y axis position */
+    double attackConstantY;
+
+    /* @brief Constant Position Attack - Z axis position */
+    double attackConstantZ;
 };
 
 #endif /* APP_VEHICULARAPPPARAMS_H_ */

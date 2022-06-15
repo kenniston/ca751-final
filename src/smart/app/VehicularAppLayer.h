@@ -135,6 +135,7 @@ namespace veins {
         TraCIMobility* mobility;
         TraCICommandInterface* traci;
         TraCICommandInterface::Vehicle* traciVehicle;
+        BaseWorldUtility* world;
 
         AnnotationManager* annotations;
         DemoBaseApplLayerToMac1609_4Interface* mac;

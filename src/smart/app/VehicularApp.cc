@@ -55,6 +55,9 @@ void VehicularApp::initialize(int stage)
         // Attack parameters
         params.attackTime = par("attackTime");
         params.attackProbability = par("attackProbability");
+        params.attackConstantX = par("attackConstantX");
+        params.attackConstantY = par("attackConstantY");
+        params.attackConstantZ = par("attackConstantZ");
 
         // Output parameters
         char *buf = (char*)malloc(sizeof(char) * PATH_MAX);
@@ -282,6 +285,38 @@ void VehicularApp::saveCsvBSM(BasicSafetyMessage* bsm)
 /**
  * Sets all the necessary fields in the WSM, BSM, or WSA.
  *
+ * @param bsm Beacon message to be sent.
+ */
+void VehicularApp::performAttack(BasicSafetyMessage* bsm)
+{
+    if (vAppAttackType == attackType::Genuine) return;
+
+    switch (vAppAttackType) {
+        case attackType::ConstantPosition:
+        {
+            curPosition = Coord(params.attackConstantX, params.attackConstantY, params.attackConstantZ);
+            std::pair<double, double> curLonLat = traci->getLonLat(curPosition);
+            curGPS = Coord(curLonLat.first, curLonLat.second);
+            bsm->setSenderPos(curPosition);
+            bsm->setSenderGpsPos(curGPS);
+            break;
+        }
+        case attackType::RandomPosition: {
+            curPosition = world->getRandomPosition();
+            std::pair<double, double> curLonLat = traci->getLonLat(curPosition);
+            curGPS = Coord(curLonLat.first, curLonLat.second);
+            bsm->setSenderPos(curPosition);
+            bsm->setSenderGpsPos(curGPS);
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+/**
+ * Sets all the necessary fields in the WSM, BSM, or WSA.
+ *
  */
 void VehicularApp::populateWSM(BaseFrame1609_4* wsm, LAddress::L2Type rcvId, int serial) {
     VehicularAppLayer::populateWSM(wsm, rcvId, serial);
@@ -300,6 +335,9 @@ void VehicularApp::populateWSM(BaseFrame1609_4* wsm, LAddress::L2Type rcvId, int
         // Configure vehicule heading and acceleration
         bsm->setSenderHeading(curHeading);
         bsm->setSenderAccel(curAccel);
+
+        // Check and perform attacks
+        performAttack(bsm);
     }
 }
 

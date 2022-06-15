@@ -108,6 +108,9 @@ protected:
 
     /** @brief Save the BSM to output stream in CSV format */
     void saveCsvBSM(BasicSafetyMessage* bsm);
+
+    /** @brief Update the BSM with attack data */
+    void performAttack(BasicSafetyMessage* bsm);
 };
 
 #endif /* APP_VEHICULARAPP_H_ */

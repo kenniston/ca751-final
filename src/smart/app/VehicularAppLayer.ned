@@ -60,9 +60,13 @@ simple VehicularAppLayer like IBaseApplLayer
         
         double attackTime = default(10s) @unit(s); //Start time for creating attackers in the simulation.
         double attackProbability = default(0.03); //Attacker rate in the simulation.
+        double attackConstantX = default(50.0); //Constant Position Attack - X axis position.
+        double attackConstantY = default(50.0); //Constant Position Attack - Y axis position.
+        double attackConstantZ = default(0.0); //Constant Position Attack - Z axis position.
+        
         string outputPath = default("output"); //Output path to message files and analysis results.
         string simulationOutputFile = default("simulation.json"); //Output file for all simulation message.
-        
+                
         bool writeJsonVehicleMessages = default(false); //Serialize vehicle received messages in vehicle output file (Json format)
         bool writeJsonGlobalMessages = default(false); //Serialize vehicle received messages in simulation file (Json format)
         bool writeCsvVehicleMessages = default(false); //Serialize vehicle received messages in vehicle output file (CSV format)
