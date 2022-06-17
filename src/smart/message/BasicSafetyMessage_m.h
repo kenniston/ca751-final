@@ -50,6 +50,7 @@ namespace veins {
  *     unsigned long senderPseudonym;
  *     bool rsu;
  *     double rss;
+ *     double arrivalTime;
  * }
  * </pre>
  */
@@ -69,6 +70,7 @@ class BasicSafetyMessage : public ::veins::BaseFrame1609_4
     unsigned long senderPseudonym = 0;
     bool rsu = false;
     double rss = 0;
+    double arrivalTime = 0;
 
   private:
     void copy(const BasicSafetyMessage& other);
@@ -128,6 +130,9 @@ class BasicSafetyMessage : public ::veins::BaseFrame1609_4
 
     virtual double getRss() const;
     virtual void setRss(double rss);
+
+    virtual double getArrivalTime() const;
+    virtual void setArrivalTime(double arrivalTime);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const BasicSafetyMessage& obj) {obj.parsimPack(b);}

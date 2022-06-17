@@ -190,6 +190,7 @@ void BasicSafetyMessage::copy(const BasicSafetyMessage& other)
     this->senderPseudonym = other.senderPseudonym;
     this->rsu = other.rsu;
     this->rss = other.rss;
+    this->arrivalTime = other.arrivalTime;
 }
 
 void BasicSafetyMessage::parsimPack(omnetpp::cCommBuffer *b) const
@@ -208,6 +209,7 @@ void BasicSafetyMessage::parsimPack(omnetpp::cCommBuffer *b) const
     doParsimPacking(b,this->senderPseudonym);
     doParsimPacking(b,this->rsu);
     doParsimPacking(b,this->rss);
+    doParsimPacking(b,this->arrivalTime);
 }
 
 void BasicSafetyMessage::parsimUnpack(omnetpp::cCommBuffer *b)
@@ -226,6 +228,7 @@ void BasicSafetyMessage::parsimUnpack(omnetpp::cCommBuffer *b)
     doParsimUnpacking(b,this->senderPseudonym);
     doParsimUnpacking(b,this->rsu);
     doParsimUnpacking(b,this->rss);
+    doParsimUnpacking(b,this->arrivalTime);
 }
 
 const LAddress::L2Type& BasicSafetyMessage::getSenderId() const
@@ -358,6 +361,16 @@ void BasicSafetyMessage::setRss(double rss)
     this->rss = rss;
 }
 
+double BasicSafetyMessage::getArrivalTime() const
+{
+    return this->arrivalTime;
+}
+
+void BasicSafetyMessage::setArrivalTime(double arrivalTime)
+{
+    this->arrivalTime = arrivalTime;
+}
+
 class BasicSafetyMessageDescriptor : public omnetpp::cClassDescriptor
 {
   private:
@@ -376,6 +389,7 @@ class BasicSafetyMessageDescriptor : public omnetpp::cClassDescriptor
         FIELD_senderPseudonym,
         FIELD_rsu,
         FIELD_rss,
+        FIELD_arrivalTime,
     };
   public:
     BasicSafetyMessageDescriptor();
@@ -442,7 +456,7 @@ const char *BasicSafetyMessageDescriptor::getProperty(const char *propertyName) 
 int BasicSafetyMessageDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
-    return base ? 13+base->getFieldCount() : 13;
+    return base ? 14+base->getFieldCount() : 14;
 }
 
 unsigned int BasicSafetyMessageDescriptor::getFieldTypeFlags(int field) const
@@ -467,8 +481,9 @@ unsigned int BasicSafetyMessageDescriptor::getFieldTypeFlags(int field) const
         FD_ISEDITABLE,    // FIELD_senderPseudonym
         FD_ISEDITABLE,    // FIELD_rsu
         FD_ISEDITABLE,    // FIELD_rss
+        FD_ISEDITABLE,    // FIELD_arrivalTime
     };
-    return (field >= 0 && field < 13) ? fieldTypeFlags[field] : 0;
+    return (field >= 0 && field < 14) ? fieldTypeFlags[field] : 0;
 }
 
 const char *BasicSafetyMessageDescriptor::getFieldName(int field) const
@@ -493,8 +508,9 @@ const char *BasicSafetyMessageDescriptor::getFieldName(int field) const
         "senderPseudonym",
         "rsu",
         "rss",
+        "arrivalTime",
     };
-    return (field >= 0 && field < 13) ? fieldNames[field] : nullptr;
+    return (field >= 0 && field < 14) ? fieldNames[field] : nullptr;
 }
 
 int BasicSafetyMessageDescriptor::findField(const char *fieldName) const
@@ -514,6 +530,7 @@ int BasicSafetyMessageDescriptor::findField(const char *fieldName) const
     if (strcmp(fieldName, "senderPseudonym") == 0) return baseIndex + 10;
     if (strcmp(fieldName, "rsu") == 0) return baseIndex + 11;
     if (strcmp(fieldName, "rss") == 0) return baseIndex + 12;
+    if (strcmp(fieldName, "arrivalTime") == 0) return baseIndex + 13;
     return base ? base->findField(fieldName) : -1;
 }
 
@@ -539,8 +556,9 @@ const char *BasicSafetyMessageDescriptor::getFieldTypeString(int field) const
         "unsigned long",    // FIELD_senderPseudonym
         "bool",    // FIELD_rsu
         "double",    // FIELD_rss
+        "double",    // FIELD_arrivalTime
     };
-    return (field >= 0 && field < 13) ? fieldTypeStrings[field] : nullptr;
+    return (field >= 0 && field < 14) ? fieldTypeStrings[field] : nullptr;
 }
 
 const char **BasicSafetyMessageDescriptor::getFieldPropertyNames(int field) const
@@ -636,6 +654,7 @@ std::string BasicSafetyMessageDescriptor::getFieldValueAsString(omnetpp::any_ptr
         case FIELD_senderPseudonym: return ulong2string(pp->getSenderPseudonym());
         case FIELD_rsu: return bool2string(pp->getRsu());
         case FIELD_rss: return double2string(pp->getRss());
+        case FIELD_arrivalTime: return double2string(pp->getArrivalTime());
         default: return "";
     }
 }
@@ -660,6 +679,7 @@ void BasicSafetyMessageDescriptor::setFieldValueAsString(omnetpp::any_ptr object
         case FIELD_senderPseudonym: pp->setSenderPseudonym(string2ulong(value)); break;
         case FIELD_rsu: pp->setRsu(string2bool(value)); break;
         case FIELD_rss: pp->setRss(string2double(value)); break;
+        case FIELD_arrivalTime: pp->setArrivalTime(string2double(value)); break;
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'BasicSafetyMessage'", field);
     }
 }
@@ -687,6 +707,7 @@ omnetpp::cValue BasicSafetyMessageDescriptor::getFieldValue(omnetpp::any_ptr obj
         case FIELD_senderPseudonym: return omnetpp::checked_int_cast<omnetpp::intval_t>(pp->getSenderPseudonym());
         case FIELD_rsu: return pp->getRsu();
         case FIELD_rss: return pp->getRss();
+        case FIELD_arrivalTime: return pp->getArrivalTime();
         default: throw omnetpp::cRuntimeError("Cannot return field %d of class 'BasicSafetyMessage' as cValue -- field index out of range?", field);
     }
 }
@@ -711,6 +732,7 @@ void BasicSafetyMessageDescriptor::setFieldValue(omnetpp::any_ptr object, int fi
         case FIELD_senderPseudonym: pp->setSenderPseudonym(omnetpp::checked_int_cast<unsigned long>(value.intValue())); break;
         case FIELD_rsu: pp->setRsu(value.boolValue()); break;
         case FIELD_rss: pp->setRss(value.doubleValue()); break;
+        case FIELD_arrivalTime: pp->setArrivalTime(value.doubleValue()); break;
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'BasicSafetyMessage'", field);
     }
 }

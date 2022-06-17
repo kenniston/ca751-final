@@ -220,12 +220,14 @@ namespace veins {
             receivedBSMs++;
             // Update Received Signal Strength (RSS)
             bsm->setRss(decider->getRecvPower_dBm());
+            bsm->setArrivalTime(simTime().dbl());
             onBSM(bsm);
         }
         else if (ServiceAdvertisment* wsa = dynamic_cast<ServiceAdvertisment*>(wsm)) {
             receivedWSAs++;
             // Update Received Signal Strength (RSS)
             wsa->setRss(decider->getRecvPower_dBm());
+            wsa->setArrivalTime(simTime().dbl());
             onWSA(wsa);
         }
         else {

@@ -115,7 +115,7 @@ void VehicularApp::setup() {
             "headingX,headingY,headingZ,distance,sender,senderPosX,senderPosY,"
             "senderPosZ,senderSpeedX,senderSpeedY,senderSpeedZ,senderHeadingX,"
             "senderHeadingY,senderHeadingZ,senderAccel,senderGPSPosX,senderGPSPosY,"
-            "senderGPSPosZ,attackType,senderType,isRSU,RSS";
+            "senderGPSPosZ,attackType,senderType,isRSU,RSS,arrivalTime";
 
     if (params.writeJsonVehicleMessages) {
         messageJsonOutStream.open(jsonMessageFileName, ios_base::app);
@@ -206,6 +206,9 @@ void VehicularApp::saveJsonBSM(BasicSafetyMessage* bsm)
     // Received Signal Strength (RSS)
     j["RSS"] = bsm->getRss();
 
+    // BSM Arrival Time
+    j["arrivalTime"] = bsm->getArrivalTime();
+
     if (params.writeJsonVehicleMessages) {
         messageJsonOutStream << j << endl;
     }
@@ -273,6 +276,9 @@ void VehicularApp::saveCsvBSM(BasicSafetyMessage* bsm)
 
     // Received Signal Strength (RSS)
     str << bsm->getRss();
+
+    // BSM Arrival Time
+    str << bsm->getArrivalTime();
 
     if (params.writeCsvVehicleMessages) {
         messageCsvOutStream << str.str() << endl;

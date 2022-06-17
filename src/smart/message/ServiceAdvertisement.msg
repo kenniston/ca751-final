@@ -32,4 +32,5 @@ packet ServiceAdvertisment extends veins::BaseFrame1609_4 {
     string serviceDescription;
     bool rsu;
     double rss;
+    double arrivalTime;
 }

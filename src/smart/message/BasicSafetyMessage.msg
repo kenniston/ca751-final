@@ -43,4 +43,6 @@ class BasicSafetyMessage extends BaseFrame1609_4 {
     unsigned long senderPseudonym;
     bool rsu;
     double rss;
+    double arrivalTime;
+    double lastDistanceTraveled;
 }
