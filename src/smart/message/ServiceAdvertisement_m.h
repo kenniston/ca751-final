@@ -37,6 +37,7 @@ namespace veins {
  *     string serviceDescription;
  *     bool rsu;
  *     double rss;
+ *     double arrivalTime;
  * }
  * </pre>
  */
@@ -47,6 +48,7 @@ class ServiceAdvertisment : public ::veins::BaseFrame1609_4
     ::omnetpp::opp_string serviceDescription;
     bool rsu = false;
     double rss = 0;
+    double arrivalTime = 0;
 
   private:
     void copy(const ServiceAdvertisment& other);
@@ -74,6 +76,9 @@ class ServiceAdvertisment : public ::veins::BaseFrame1609_4
 
     virtual double getRss() const;
     virtual void setRss(double rss);
+
+    virtual double getArrivalTime() const;
+    virtual void setArrivalTime(double arrivalTime);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const ServiceAdvertisment& obj) {obj.parsimPack(b);}

@@ -191,6 +191,7 @@ void BasicSafetyMessage::copy(const BasicSafetyMessage& other)
     this->rsu = other.rsu;
     this->rss = other.rss;
     this->arrivalTime = other.arrivalTime;
+    this->lastDistanceTraveled = other.lastDistanceTraveled;
 }
 
 void BasicSafetyMessage::parsimPack(omnetpp::cCommBuffer *b) const
@@ -210,6 +211,7 @@ void BasicSafetyMessage::parsimPack(omnetpp::cCommBuffer *b) const
     doParsimPacking(b,this->rsu);
     doParsimPacking(b,this->rss);
     doParsimPacking(b,this->arrivalTime);
+    doParsimPacking(b,this->lastDistanceTraveled);
 }
 
 void BasicSafetyMessage::parsimUnpack(omnetpp::cCommBuffer *b)
@@ -229,6 +231,7 @@ void BasicSafetyMessage::parsimUnpack(omnetpp::cCommBuffer *b)
     doParsimUnpacking(b,this->rsu);
     doParsimUnpacking(b,this->rss);
     doParsimUnpacking(b,this->arrivalTime);
+    doParsimUnpacking(b,this->lastDistanceTraveled);
 }
 
 const LAddress::L2Type& BasicSafetyMessage::getSenderId() const
@@ -371,6 +374,16 @@ void BasicSafetyMessage::setArrivalTime(double arrivalTime)
     this->arrivalTime = arrivalTime;
 }
 
+double BasicSafetyMessage::getLastDistanceTraveled() const
+{
+    return this->lastDistanceTraveled;
+}
+
+void BasicSafetyMessage::setLastDistanceTraveled(double lastDistanceTraveled)
+{
+    this->lastDistanceTraveled = lastDistanceTraveled;
+}
+
 class BasicSafetyMessageDescriptor : public omnetpp::cClassDescriptor
 {
   private:
@@ -390,6 +403,7 @@ class BasicSafetyMessageDescriptor : public omnetpp::cClassDescriptor
         FIELD_rsu,
         FIELD_rss,
         FIELD_arrivalTime,
+        FIELD_lastDistanceTraveled,
     };
   public:
     BasicSafetyMessageDescriptor();
@@ -456,7 +470,7 @@ const char *BasicSafetyMessageDescriptor::getProperty(const char *propertyName) 
 int BasicSafetyMessageDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
-    return base ? 14+base->getFieldCount() : 14;
+    return base ? 15+base->getFieldCount() : 15;
 }
 
 unsigned int BasicSafetyMessageDescriptor::getFieldTypeFlags(int field) const
@@ -482,8 +496,9 @@ unsigned int BasicSafetyMessageDescriptor::getFieldTypeFlags(int field) const
         FD_ISEDITABLE,    // FIELD_rsu
         FD_ISEDITABLE,    // FIELD_rss
         FD_ISEDITABLE,    // FIELD_arrivalTime
+        FD_ISEDITABLE,    // FIELD_lastDistanceTraveled
     };
-    return (field >= 0 && field < 14) ? fieldTypeFlags[field] : 0;
+    return (field >= 0 && field < 15) ? fieldTypeFlags[field] : 0;
 }
 
 const char *BasicSafetyMessageDescriptor::getFieldName(int field) const
@@ -509,8 +524,9 @@ const char *BasicSafetyMessageDescriptor::getFieldName(int field) const
         "rsu",
         "rss",
         "arrivalTime",
+        "lastDistanceTraveled",
     };
-    return (field >= 0 && field < 14) ? fieldNames[field] : nullptr;
+    return (field >= 0 && field < 15) ? fieldNames[field] : nullptr;
 }
 
 int BasicSafetyMessageDescriptor::findField(const char *fieldName) const
@@ -531,6 +547,7 @@ int BasicSafetyMessageDescriptor::findField(const char *fieldName) const
     if (strcmp(fieldName, "rsu") == 0) return baseIndex + 11;
     if (strcmp(fieldName, "rss") == 0) return baseIndex + 12;
     if (strcmp(fieldName, "arrivalTime") == 0) return baseIndex + 13;
+    if (strcmp(fieldName, "lastDistanceTraveled") == 0) return baseIndex + 14;
     return base ? base->findField(fieldName) : -1;
 }
 
@@ -557,8 +574,9 @@ const char *BasicSafetyMessageDescriptor::getFieldTypeString(int field) const
         "bool",    // FIELD_rsu
         "double",    // FIELD_rss
         "double",    // FIELD_arrivalTime
+        "double",    // FIELD_lastDistanceTraveled
     };
-    return (field >= 0 && field < 14) ? fieldTypeStrings[field] : nullptr;
+    return (field >= 0 && field < 15) ? fieldTypeStrings[field] : nullptr;
 }
 
 const char **BasicSafetyMessageDescriptor::getFieldPropertyNames(int field) const
@@ -655,6 +673,7 @@ std::string BasicSafetyMessageDescriptor::getFieldValueAsString(omnetpp::any_ptr
         case FIELD_rsu: return bool2string(pp->getRsu());
         case FIELD_rss: return double2string(pp->getRss());
         case FIELD_arrivalTime: return double2string(pp->getArrivalTime());
+        case FIELD_lastDistanceTraveled: return double2string(pp->getLastDistanceTraveled());
         default: return "";
     }
 }
@@ -680,6 +699,7 @@ void BasicSafetyMessageDescriptor::setFieldValueAsString(omnetpp::any_ptr object
         case FIELD_rsu: pp->setRsu(string2bool(value)); break;
         case FIELD_rss: pp->setRss(string2double(value)); break;
         case FIELD_arrivalTime: pp->setArrivalTime(string2double(value)); break;
+        case FIELD_lastDistanceTraveled: pp->setLastDistanceTraveled(string2double(value)); break;
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'BasicSafetyMessage'", field);
     }
 }
@@ -708,6 +728,7 @@ omnetpp::cValue BasicSafetyMessageDescriptor::getFieldValue(omnetpp::any_ptr obj
         case FIELD_rsu: return pp->getRsu();
         case FIELD_rss: return pp->getRss();
         case FIELD_arrivalTime: return pp->getArrivalTime();
+        case FIELD_lastDistanceTraveled: return pp->getLastDistanceTraveled();
         default: throw omnetpp::cRuntimeError("Cannot return field %d of class 'BasicSafetyMessage' as cValue -- field index out of range?", field);
     }
 }
@@ -733,6 +754,7 @@ void BasicSafetyMessageDescriptor::setFieldValue(omnetpp::any_ptr object, int fi
         case FIELD_rsu: pp->setRsu(value.boolValue()); break;
         case FIELD_rss: pp->setRss(value.doubleValue()); break;
         case FIELD_arrivalTime: pp->setArrivalTime(value.doubleValue()); break;
+        case FIELD_lastDistanceTraveled: pp->setLastDistanceTraveled(value.doubleValue()); break;
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'BasicSafetyMessage'", field);
     }
 }
