@@ -26,7 +26,9 @@
 #ifndef APP_VEHICULARAPP_H_
 #define APP_VEHICULARAPP_H_
 
+#include <vector>
 #include <omnetpp.h>
+#include <unordered_map>
 
 #include "VehicularAppLayer.h"
 #include "VehicularAppParams.h"
@@ -50,10 +52,12 @@ class VEINS_API VehicularApp: public VehicularAppLayer {
 public:
     void initialize(int stage) override;
     void finish() override;
-
 protected:
     /** @brief General application parameters */
     static VehicularAppParams params;
+
+    /** @brief BSM history grouped by sender */
+    unordered_map<LAddress::L2Type, vector<BasicSafetyMessage*>> bsmHistory;
 
     /** @brief The car has stopped in sumo simulation */
     bool hasStopped;
@@ -111,6 +115,9 @@ protected:
 
     /** @brief Update the BSM with attack data */
     void performAttack(BasicSafetyMessage* bsm);
+
+    /** @brief Update the BSM and save it to history */
+    void updateHistory(BasicSafetyMessage* bsm);
 };
 
 #endif /* APP_VEHICULARAPP_H_ */

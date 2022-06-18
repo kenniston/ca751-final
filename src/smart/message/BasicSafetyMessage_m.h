@@ -48,10 +48,10 @@ namespace veins {
  *     int senderType;
  *     int senderAttackType;
  *     unsigned long senderPseudonym;
+ *     double senderLastDistTraveled;
  *     bool rsu;
  *     double rss;
  *     double arrivalTime;
- *     double lastDistanceTraveled;
  * }
  * </pre>
  */
@@ -69,10 +69,10 @@ class BasicSafetyMessage : public ::veins::BaseFrame1609_4
     int senderType = 0;
     int senderAttackType = 0;
     unsigned long senderPseudonym = 0;
+    double senderLastDistTraveled = 0;
     bool rsu = false;
     double rss = 0;
     double arrivalTime = 0;
-    double lastDistanceTraveled = 0;
 
   private:
     void copy(const BasicSafetyMessage& other);
@@ -127,6 +127,9 @@ class BasicSafetyMessage : public ::veins::BaseFrame1609_4
     virtual unsigned long getSenderPseudonym() const;
     virtual void setSenderPseudonym(unsigned long senderPseudonym);
 
+    virtual double getSenderLastDistTraveled() const;
+    virtual void setSenderLastDistTraveled(double senderLastDistTraveled);
+
     virtual bool getRsu() const;
     virtual void setRsu(bool rsu);
 
@@ -135,9 +138,6 @@ class BasicSafetyMessage : public ::veins::BaseFrame1609_4
 
     virtual double getArrivalTime() const;
     virtual void setArrivalTime(double arrivalTime);
-
-    virtual double getLastDistanceTraveled() const;
-    virtual void setLastDistanceTraveled(double lastDistanceTraveled);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const BasicSafetyMessage& obj) {obj.parsimPack(b);}

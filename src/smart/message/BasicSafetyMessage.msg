@@ -41,8 +41,8 @@ class BasicSafetyMessage extends BaseFrame1609_4 {
     int senderType;
     int senderAttackType;
     unsigned long senderPseudonym;
+    double senderLastDistTraveled;
     bool rsu;
     double rss;
     double arrivalTime;
-    double lastDistanceTraveled;
 }

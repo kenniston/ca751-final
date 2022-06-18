@@ -91,6 +91,13 @@ void VehicularApp::finish()
     if (globalCsvMessageOutStream.is_open()) {
         globalCsvMessageOutStream.close();
     }
+
+    // Remove allocated memory in history
+    for (std::pair<LAddress::L2Type, vector<BasicSafetyMessage*>> element : bsmHistory) {
+        for (BasicSafetyMessage* bsm : element.second) {
+            delete bsm;
+        }
+    }
 }
 
 /**
@@ -113,9 +120,9 @@ void VehicularApp::setup() {
     string csvHeader =
             "receiver,positionX,positionY,positionZ,speedX,speedY,speedZ,"
             "headingX,headingY,headingZ,distance,sender,senderPosX,senderPosY,"
-            "senderPosZ,senderSpeedX,senderSpeedY,senderSpeedZ,senderHeadingX,"
+            "senderPosZ,senderSpeed,senderSpeedX,senderSpeedY,senderSpeedZ,senderHeadingX,"
             "senderHeadingY,senderHeadingZ,senderAccel,senderGPSPosX,senderGPSPosY,"
-            "senderGPSPosZ,attackType,senderType,isRSU,RSS,arrivalTime";
+            "senderGPSPosZ,attackType,senderType,senderDistTraveled,isRSU,RSS,arrivalTime";
 
     if (params.writeJsonVehicleMessages) {
         messageJsonOutStream.open(jsonMessageFileName, ios_base::app);
@@ -179,9 +186,12 @@ void VehicularApp::saveJsonBSM(BasicSafetyMessage* bsm)
     Coord senderPosition = bsm->getSenderPos();
     j["senderPos"] = to_string(senderPosition.x) + "," + to_string(senderPosition.y) + "," + to_string(senderPosition.z);
 
-    // Sender speed
+    // Sender speed vector
     Coord senderSpeed = bsm->getSenderSpeed();
     j["senderSpeed"] = to_string(senderSpeed.x) + "," + to_string(senderSpeed.y) + "," + to_string(senderSpeed.z);
+
+    // Sender speed length
+    j["senderSpeedLength"] = senderSpeed.length();
 
     // Sender heading
     Coord senderHeading = bsm->getSenderHeading();
@@ -200,6 +210,9 @@ void VehicularApp::saveJsonBSM(BasicSafetyMessage* bsm)
     // Sender Type - Genuine or Attacker
     j["senderType"] = bsm->getSenderType();
 
+    // Last Distance Traveled (Sender)
+    j["senderDistTraveled"] = bsm->getSenderLastDistTraveled();
+
     // RSU flag
     j["isRSU"] = bsm->getRsu() ? 1 : 0;
 
@@ -211,9 +224,11 @@ void VehicularApp::saveJsonBSM(BasicSafetyMessage* bsm)
 
     if (params.writeJsonVehicleMessages) {
         messageJsonOutStream << j << endl;
+        messageJsonOutStream.flush();
     }
     if (params.writeJsonGlobalMessages) {
         globalJsonMessageOutStream << j << endl;
+        globalJsonMessageOutStream.flush();
     }
 }
 
@@ -252,6 +267,9 @@ void VehicularApp::saveCsvBSM(BasicSafetyMessage* bsm)
 
     // Sender speed
     Coord senderSpeed = bsm->getSenderSpeed();
+    str<< to_string(senderSpeed.length()) << ",";
+
+    // Sender speed vector
     str << to_string(senderSpeed.x) + "," + to_string(senderSpeed.y) + "," + to_string(senderSpeed.z) << ",";
 
     // Sender heading
@@ -271,20 +289,26 @@ void VehicularApp::saveCsvBSM(BasicSafetyMessage* bsm)
     // Sender Type - Genuine or Attacker
     str << bsm->getSenderType() << ",";
 
+    // Last Distance Traveled (Sender)
+    str << bsm->getSenderLastDistTraveled() << ",";
+
     // RSU flag
     str << (bsm->getRsu() ? 1 : 0) << ",";
 
     // Received Signal Strength (RSS)
-    str << bsm->getRss();
+    str << bsm->getRss() << ",";
 
     // BSM Arrival Time
     str << bsm->getArrivalTime();
 
+
     if (params.writeCsvVehicleMessages) {
         messageCsvOutStream << str.str() << endl;
+        messageCsvOutStream.flush();
     }
     if (params.writeCsvGlobalMessages) {
         globalCsvMessageOutStream << str.str() << endl;
+        globalCsvMessageOutStream.flush();
     }
 }
 
@@ -356,6 +380,8 @@ void VehicularApp::populateWSM(BaseFrame1609_4* wsm, LAddress::L2Type rcvId, int
  */
 void VehicularApp::onBSM(BasicSafetyMessage* bsm)
 {
+    updateHistory(bsm);
+
     if (params.writeJsonVehicleMessages || params.writeJsonGlobalMessages) {
         saveJsonBSM(bsm);
     }
@@ -432,3 +458,31 @@ void VehicularApp::evaluateType()
         vAppAttackType = AttackType::VehicularAppAttackType::Genuine;
     }
 }
+
+/**
+ * Update the BSM and save it to history.
+ *
+ * @param bsm Beacon message receive by the application.
+ */
+void VehicularApp::updateHistory(BasicSafetyMessage* bsm) {
+    // Make copy of BSM
+    BasicSafetyMessage* bsmCopy = bsm->dup();
+
+    LAddress::L2Type senderId = bsmCopy->getSenderId();
+
+    // Calculate the distance traveled based on the last BSM received
+    vector<BasicSafetyMessage* > vec = bsmHistory[senderId];
+    if (vec.size() > 0) {
+        Coord lastCoord = vec[vec.size() - 1]->getSenderPos();
+        Coord curCoord = bsmCopy->getSenderPos();
+
+        double lastDistance = curCoord.distance(lastCoord);
+        bsmCopy->setSenderLastDistTraveled(lastDistance);
+        bsm->setSenderLastDistTraveled(lastDistance);
+    }
+
+    // Store the received BSM in the sender's history
+    vec.push_back(bsmCopy);
+    bsmHistory[senderId] = vec;
+}
+
