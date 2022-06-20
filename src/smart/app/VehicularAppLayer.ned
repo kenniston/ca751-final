@@ -72,6 +72,11 @@ simple VehicularAppLayer like IBaseApplLayer
         bool writeCsvVehicleMessages = default(false); //Serialize vehicle received messages in vehicle output file (CSV format)
         bool writeCsvGlobalMessages = default(false); //Serialize vehicle received messages in simulation file (CSV format)
         
+        string trainingFile = default(""); //Misbehavir detector training dataframe file (CSV Format)
+        bool trainingFileHeader = default(false); //Misbehavior detector training dataframe file with or without a header (CSV Format)
+        object trainingFileFilterColumns = default([]); //Training file filter columns (CSV Format)
+        int trainingFileLabelColumn = default(0); //Label column in training file  after filtering (CSV Format);
+        
     gates:
         input lowerLayerIn; // from mac layer
         output lowerLayerOut; // to mac layer

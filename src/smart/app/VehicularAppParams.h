@@ -69,6 +69,18 @@ public:
 
     /* @brief Constant Position Attack - Z axis position */
     double attackConstantZ;
+
+    /** @brief Misbehavior detector training dataframe file (CSV Format) */
+    string trainingFile;
+
+    /** @brief Misbehavior detector training dataframe file with or without a header (CSV Format) */
+    bool trainingFileHeader;
+
+    /** @brief Misbehavior detector training dataframe file filter columns list (CSV Format) */
+    cValueArray* trainingFileFilterColumns;
+
+    /** @brief Label column in training file  after filtering (CSV Format) */
+    int trainingFileLabelColumn;
 };
 
 #endif /* APP_VEHICULARAPPPARAMS_H_ */

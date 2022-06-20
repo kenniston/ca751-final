@@ -34,6 +34,7 @@
 #include "VehicularAppParams.h"
 #include "../enum/VehicularAppType.h"
 #include "../enum/VehicularAppAttackType.h"
+#include "../decider/VehicularAppDecider.h"
 
 using namespace std;
 using namespace veins;
@@ -49,12 +50,17 @@ using namespace omnetpp;
  *
  */
 class VEINS_API VehicularApp: public VehicularAppLayer {
+private:
+    void configureOutput();
 public:
     void initialize(int stage) override;
     void finish() override;
 protected:
     /** @brief General application parameters */
     static VehicularAppParams params;
+
+    /** @brief Misbehavior Detector */
+    VehicularAppDecider* decider;
 
     /** @brief BSM history grouped by sender */
     unordered_map<LAddress::L2Type, vector<BasicSafetyMessage*>> bsmHistory;

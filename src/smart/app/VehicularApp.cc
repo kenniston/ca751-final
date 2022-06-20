@@ -68,6 +68,11 @@ void VehicularApp::initialize(int stage)
         params.writeCsvVehicleMessages = par("writeCsvVehicleMessages");
         params.writeJsonGlobalMessages = par("writeJsonGlobalMessages");
         params.writeJsonVehicleMessages = par("writeJsonVehicleMessages");
+
+        params.trainingFile = par("trainingFile").stdstringValue();
+        params.trainingFileHeader = par("trainingFileHeader");
+        params.trainingFileFilterColumns = check_and_cast<cValueArray*>(par("trainingFileFilterColumns").objectValue());
+        params.trainingFileLabelColumn = par("trainingFileLabelColumn");
     } else if (stage == 1) {
         EV << par("appName").stringValue() << " initialized! " << std::endl;
         setup();
@@ -107,6 +112,31 @@ void VehicularApp::setup() {
     // Sumo Vehicle Type
     sumoVType = traciVehicle->getVType();
 
+    // Configure output files
+    configureOutput();
+
+    // Evaluate the vehicle type on the initialization
+    evaluateType();
+
+    // Change vehicle color in Sumo simulation based on vehicle type.
+    // The vehicle color must be in RGBA format
+    if (vAppType == AppType::VehicularAppType::Genuine) {
+        traciVehicle->setColor(TraCIColor(255, 255, 0, 255)); // Yellow
+    } else {
+        traciVehicle->setColor(TraCIColor(255, 46, 46, 255)); // Red
+    }
+
+    // Configure the misbehavior decider
+    vector<int64_t> filterColums = params.trainingFileFilterColumns->asIntVector();
+    decider = new VehicularAppDecider();
+    decider->initialize(params.trainingFile, filterColums,
+            params.trainingFileHeader, params.trainingFileLabelColumn);
+}
+
+/**
+ * Output file configuration
+ */
+void VehicularApp::configureOutput(){
     // Create output path
     mkdir(params.outputPath.c_str(), 0755);
     mkdir((params.outputPath + "csv/").c_str(), 0755);
@@ -139,17 +169,6 @@ void VehicularApp::setup() {
         bool createHeader = access(csvGlobalMessageFileName.c_str(), F_OK) == -1;
         globalCsvMessageOutStream.open(csvGlobalMessageFileName, ios_base::app);
         if (createHeader) globalCsvMessageOutStream << csvHeader << endl;
-    }
-
-    // Evaluate the vehicle type on the initialization
-    evaluateType();
-
-    // Change vehicle color in Sumo simulation based on vehicle type.
-    // The vehicle color must be in RGBA format
-    if (vAppType == AppType::VehicularAppType::Genuine) {
-        traciVehicle->setColor(TraCIColor(255, 255, 0, 255)); // Yellow
-    } else {
-        traciVehicle->setColor(TraCIColor(255, 46, 46, 255)); // Red
     }
 }
 
