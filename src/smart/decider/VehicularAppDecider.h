@@ -37,14 +37,14 @@ public:
     virtual ~VehicularAppDecider();
 
     /** @brief General Decider initialization function */
-    void initialize(string dataFrameFile, vector<int64_t> filterColumns, bool header, int labelColumn);
+    void initialize(string dataFrameFile, vector<int64_t> filter, bool header, int labelColumn);
 
 protected:
     /** @brief Decision Tree Classifier */
     DecisionTree* treeClassifier;
 
     /** @brief Load the Dataframe from a CSV file */
-    vector<vector<string>> loadDataframe(string filename, vector<int64_t> filterColumns, bool header, int labelColumn);
+    vector<vector<string>> loadDataframe(string filename, vector<int64_t> filter, bool header, int labelColumn);
 };
 
 #endif /* APP_VEHICULAR_DECIDER_H_ */

@@ -25,6 +25,10 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <algorithm>
 #include "VehicularAppDecider.h"
 
 using namespace std;
@@ -35,14 +39,14 @@ using namespace std;
  * @param dataFrameFile Filename of Dataframe to load data.
  */
 void VehicularAppDecider::initialize(string dataFrameFile,
-        vector<int64_t> filterColumns, bool header, int labelColumn)
+        vector<int64_t> filter, bool header, int labelColumn)
 {
     if (dataFrameFile.empty()) {
         return;
     }
 
     // Loads the training dataframe.
-    auto df = loadDataframe(dataFrameFile, filterColumns, header, labelColumn);
+    auto df = loadDataframe(dataFrameFile, filter, header, labelColumn);
 
     // Initialize the
     treeClassifier = new DecisionTree();
@@ -63,11 +67,28 @@ VehicularAppDecider::~VehicularAppDecider()
  * @param filename Filename of Dataframe to load.
  */
 vector<vector<string>> VehicularAppDecider::loadDataframe(string filename,
-        vector<int64_t> filterColumns, bool header, int labelColumn)
+        vector<int64_t> filter, bool header, int labelColumn)
 {
     vector<vector<string>> result;
+    string line;
+    ifstream infile(filename);
 
-
+    if (header) {
+        getline(infile, line);
+    }
+    while (getline(infile, line)) {
+        int col = 0;
+        string token;
+        vector<string> columns;
+        stringstream strstream(line);
+        while(getline(strstream, token, ',')) {
+            if (find(filter.begin(), filter.end(), col) != filter.end()) {
+                columns.push_back(token);
+            }
+            col++;
+        }
+        result.push_back(columns);
+    }
 
     return result;
 }
