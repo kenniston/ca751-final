@@ -31,7 +31,23 @@
 
 using namespace std;
 
+/**
+ * @brief
+ * Decison Tree Class
+ */
 class DecisionTree {
+
+    /**
+     * @brief
+     * A Question is used to partition a dataset.
+     * This class just records a column number and a column value.
+     * The 'match' method is used to compare the feature value in
+     * an example to the feature value stored in the question.
+     */
+    class Question {
+
+    };
+
 public:
     virtual ~DecisionTree();
 
