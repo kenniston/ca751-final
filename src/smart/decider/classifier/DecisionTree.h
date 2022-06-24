@@ -26,6 +26,7 @@
 #ifndef CLASSIFIER_DECISIONTREE_H_
 #define CLASSIFIER_DECISIONTREE_H_
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -52,7 +53,19 @@ public:
     virtual ~DecisionTree();
 
     /** @brief General Decision Tree initialization */
-    virtual void initialize(vector<vector<string>> df);
+    virtual void initialize(vector<vector<string>> df, int classColumn);
+
+protected:
+    /** @brief The training dataset */
+    vector<vector<string>> dataset;
+
+    /** @brief ID for the class column in dataset */
+    int classColumn;
+
+    /** @brief Returns a class-count map from a dataset **/
+    virtual map<string, int> targetCount(vector<string> column);
+
+
 };
 
 #endif /* CLASSIFIER_DECISIONTREE_H_ */

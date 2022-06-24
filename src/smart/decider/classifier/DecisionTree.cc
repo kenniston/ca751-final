@@ -23,8 +23,7 @@
 // @version 1.0
 //
 
-#include <vector>
-#include <string>
+#include <iostream>
 #include "DecisionTree.h"
 
 using namespace std;
@@ -34,9 +33,10 @@ using namespace std;
  *
  * @param df Decision Tree training dataframe.
  */
-void DecisionTree::initialize(vector<vector<string>> df)
+void DecisionTree::initialize(vector<vector<string>> df, int classColumn)
 {
-
+    this->classColumn = classColumn;
+    this->dataset = df;
 }
 
 /**
@@ -47,4 +47,27 @@ DecisionTree::~DecisionTree()
 
 }
 
+/**
+ * Returns a class-count map from a dataset
+ *
+ * @param rows Rows from the dataset class column.
+ * @return A map with class count.
+ */
+map<string, int> DecisionTree::targetCount(vector<string> rows) {
+    map<string, int> result;
 
+    for (string row : rows) {
+        auto label = result.find(row);
+    }
+}
+
+int main() {
+    vector<string> rows = {"Apple", "Apple", "Orange", "Melon", "Orange"};
+    set<string> unique(rows.begin(), rows.end());
+
+    for (string s : unique) {
+        cout << s << " ";
+    }
+
+    return 0;
+}
