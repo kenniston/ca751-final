@@ -58,6 +58,7 @@ map<string, int> DecisionTree::targetCount(vector<string> rows) {
 
     for (string row : rows) {
         auto label = result.find(row);
+
     }
 }
 
