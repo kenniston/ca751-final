@@ -47,7 +47,22 @@ class DecisionTree {
      * an example to the feature value stored in the question.
      */
     class Question {
+    public:
+        /** @brief Question Constructor with column index and column value */
+        virtual Question(int column, string value);
 
+        /** @brief Compare the feature value in an row to the feature value in this question */
+        virtual bool match(vector<string> row);
+
+        /** @brief Print the question */
+        virtual void print();
+
+    protected:
+        /** @brief Column index for this question in dataframe */
+        int column;
+
+        /** @brief Column value for this question in dataframe */
+        int value;
     };
 
 public:

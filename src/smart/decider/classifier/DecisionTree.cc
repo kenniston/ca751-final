@@ -110,6 +110,43 @@ bool DecisionTree::isNumber(string value) {
              [](unsigned char c) { return !std::isdigit(c); }) == value.end();
 }
 
+/**
+ * Decision Tree Question Constructor with column
+ * index and column value.
+ *
+ * @param column The column index for this question
+ * @param value The column value for this question
+ */
+DecisionTree::Question::Question(int column, string value) {
+    this->column = column;
+    this->value = value;
+}
+
+/**
+ * Compare the feature value in an row to the feature
+ * value in this question
+ *
+ * @param row The row from dataframe to test
+ * @return A boolean value for the equality of the row
+ *         value and the question value
+ */
+bool DecisionTree::Question::match(vector<string> row) {
+    string val = row[column];
+    if (isNumber(val)) {
+        int v1 = atof(value);
+        int v2 = atof(val);
+        return v1 >= v2;
+    } else {
+        return val == value;
+    }
+}
+
+/** @brief Print the question */
+void DecisionTree::Question::print() {
+
+    cout << "Example value "
+}
+
 #include <set>
 int main() {
     vector<vector<string>> dataframe = {
