@@ -50,7 +50,7 @@ void VehicularAppDecider::initialize(string dataFrameFile,
 
     // Initialize the
     treeClassifier = new DecisionTree();
-    treeClassifier->initialize(df);
+    treeClassifier->initialize(df, labelColumn);
 }
 
 /**

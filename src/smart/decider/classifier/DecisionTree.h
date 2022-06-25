@@ -26,6 +26,7 @@
 #ifndef CLASSIFIER_DECISIONTREE_H_
 #define CLASSIFIER_DECISIONTREE_H_
 
+#include <set>
 #include <map>
 #include <string>
 #include <vector>
@@ -40,7 +41,7 @@ class DecisionTree {
 
     /**
      * @brief
-     * A Question is used to partition a dataset.
+     * A Question is used to partition a dataframe.
      * This class just records a column number and a column value.
      * The 'match' method is used to compare the feature value in
      * an example to the feature value stored in the question.
@@ -55,17 +56,24 @@ public:
     /** @brief General Decision Tree initialization */
     virtual void initialize(vector<vector<string>> df, int classColumn);
 
+    /** @brief Returns a class-count map from a dataframe **/
+    virtual map<string, int> targetCount();
+
+    /** @brief Return a unique values for a column in the dataframe */
+    virtual set<string> uniqueValues();
+
+    /** @brief Return a dataframe column */
+    virtual vector<string> getColumn(int index);
+
+    /** @brief Check if the string value is a number */
+    bool isNumber(string value);
+
 protected:
-    /** @brief The training dataset */
-    vector<vector<string>> dataset;
+    /** @brief The training dataframe */
+    vector<vector<string>> dataframe;
 
-    /** @brief ID for the class column in dataset */
+    /** @brief ID for the class column in dataframe */
     int classColumn;
-
-    /** @brief Returns a class-count map from a dataset **/
-    virtual map<string, int> targetCount(vector<string> column);
-
-
 };
 
 #endif /* CLASSIFIER_DECISIONTREE_H_ */

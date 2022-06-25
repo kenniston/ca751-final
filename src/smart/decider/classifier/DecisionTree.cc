@@ -24,6 +24,7 @@
 //
 
 #include <iostream>
+#include <algorithm>
 #include "DecisionTree.h"
 
 using namespace std;
@@ -36,7 +37,7 @@ using namespace std;
 void DecisionTree::initialize(vector<vector<string>> df, int classColumn)
 {
     this->classColumn = classColumn;
-    this->dataset = df;
+    this->dataframe = df;
 }
 
 /**
@@ -48,27 +49,91 @@ DecisionTree::~DecisionTree()
 }
 
 /**
- * Returns a class-count map from a dataset
+ * Returns a class-count map from a dataframe
  *
- * @param rows Rows from the dataset class column.
  * @return A map with class count.
  */
-map<string, int> DecisionTree::targetCount(vector<string> rows) {
+map<string, int> DecisionTree::targetCount() {
     map<string, int> result;
 
-    for (string row : rows) {
-        auto label = result.find(row);
-
+    vector<string> column = getColumn(classColumn);
+    for (string value : column) {
+        auto idx = result.find(value);
+        if (idx == result.end()) {
+            result[value] = 0;
+        }
+        result[value] += 1;
     }
+
+    return result;
 }
 
-int main() {
-    vector<string> rows = {"Apple", "Apple", "Orange", "Melon", "Orange"};
-    set<string> unique(rows.begin(), rows.end());
+/**
+ * Return a dataframe column.
+ *
+ * @param index Index for a column in the dataframe
+ * @return A column vector
+ */
+vector<string> DecisionTree::getColumn(int index){
+    vector<string> column;
 
-    for (string s : unique) {
-        cout << s << " ";
+    for (vector<string> row : dataframe) {
+        column.push_back(row[index]);
     }
+
+    return column;
+}
+
+
+/**
+ * Return a unique values for a column in the dataframe.
+ *
+ * @param dataframe Dataframe with rows and columns.
+ * @param labelColum Index for label column in dataframe
+ * @return A set of unique values from the label column in the dataframe.
+ */
+set<string> DecisionTree::uniqueValues() {
+    set<string> result;
+    for (vector<string> row : dataframe) {
+        result.insert(row[classColumn]);
+    }
+    return result;
+}
+
+/**
+ * Check if the string value is a number
+ *
+ * @param value String to check the value
+ */
+bool DecisionTree::isNumber(string value) {
+     return !value.empty() && std::find_if(value.begin(), value.end(),
+             [](unsigned char c) { return !std::isdigit(c); }) == value.end();
+}
+
+#include <set>
+int main() {
+    vector<vector<string>> dataframe = {
+        {"Green", "3", "Apple"},
+        {"Yellow", "3", "Apple"},
+        {"Red", "1", "Grape"},
+        {"Red", "1", "Grape"},
+        {"Yellow", "3", "Lemon"}
+    };
+
+    DecisionTree *d = new DecisionTree();
+    d->initialize(dataframe, 2);
+
+    map<string, int>::iterator itr;
+    map<string, int> m = d->targetCount();
+    for (itr = m.begin(); itr != m.end(); ++itr) {
+        cout << itr->first << ": " << itr->second << "\n";
+    }
+
+    cout << "3 is a number? " << d->isNumber("3") << "\n";
+    cout << "Apple is a number? " << d->isNumber("Apple") << "\n";
+
+    delete d;
+
 
     return 0;
 }
