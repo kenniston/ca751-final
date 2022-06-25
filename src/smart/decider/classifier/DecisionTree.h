@@ -29,7 +29,8 @@
 #include <set>
 #include <map>
 #include <string>
-#include <vector>
+#include <memory>
+#include "../VehicularAppStd.h"
 
 using namespace std;
 
@@ -38,7 +39,7 @@ using namespace std;
  * Decison Tree Class
  */
 class DecisionTree {
-
+public:
     /**
      * @brief
      * A Question is used to partition a dataframe.
@@ -49,10 +50,13 @@ class DecisionTree {
     class Question {
     public:
         /** @brief Question Constructor with column index and column value */
-        virtual Question(int column, string value);
+        Question(int column, string value, string name);
+
+        /** @brief Question Destructor */
+        virtual ~Question() = default;
 
         /** @brief Compare the feature value in an row to the feature value in this question */
-        virtual bool match(vector<string> row);
+        virtual bool match(svector row);
 
         /** @brief Print the question */
         virtual void print();
@@ -62,14 +66,17 @@ class DecisionTree {
         int column;
 
         /** @brief Column value for this question in dataframe */
-        int value;
+        string value;
+
+        /** @brief The name of question */
+        string name;
     };
 
-public:
-    virtual ~DecisionTree();
+    /** brief Decision Tree destructor */
+    virtual ~DecisionTree() = default;
 
     /** @brief General Decision Tree initialization */
-    virtual void initialize(vector<vector<string>> df, int classColumn);
+    virtual void initialize(dataframe df, svector header, int classColumn);
 
     /** @brief Returns a class-count map from a dataframe **/
     virtual map<string, int> targetCount();
@@ -78,14 +85,17 @@ public:
     virtual set<string> uniqueValues();
 
     /** @brief Return a dataframe column */
-    virtual vector<string> getColumn(int index);
+    virtual svector getColumn(int index);
 
-    /** @brief Check if the string value is a number */
-    bool isNumber(string value);
+    /** @brief For each row in the dataset, check if it matches the question */
+    virtual tuple<dataframe, dataframe> partition(dataframe df, shared_ptr<DecisionTree::Question> question);
 
 protected:
     /** @brief The training dataframe */
-    vector<vector<string>> dataframe;
+    dataframe df;
+
+    /** @brief Dataframe header */
+    svector header;
 
     /** @brief ID for the class column in dataframe */
     int classColumn;

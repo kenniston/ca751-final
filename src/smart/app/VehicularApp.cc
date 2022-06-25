@@ -128,9 +128,8 @@ void VehicularApp::setup() {
 
     // Configure the misbehavior decider
     vector<int64_t> filterColums = params.trainingFileFilterColumns->asIntVector();
-    decider = new VehicularAppDecider();
-    decider->initialize(params.trainingFile, filterColums,
-            params.trainingFileHeader, params.trainingFileLabelColumn);
+    decider = make_unique<VehicularAppDecider>();
+    decider->initialize(params.trainingFile, filterColums, params.trainingFileLabelColumn);
 }
 
 /**

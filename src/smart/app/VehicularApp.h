@@ -27,6 +27,7 @@
 #define APP_VEHICULARAPP_H_
 
 #include <vector>
+#include <memory>
 #include <omnetpp.h>
 #include <unordered_map>
 
@@ -60,7 +61,7 @@ protected:
     static VehicularAppParams params;
 
     /** @brief Misbehavior Detector */
-    VehicularAppDecider* decider;
+    unique_ptr<VehicularAppDecider> decider;
 
     /** @brief BSM history grouped by sender */
     unordered_map<LAddress::L2Type, vector<BasicSafetyMessage*>> bsmHistory;

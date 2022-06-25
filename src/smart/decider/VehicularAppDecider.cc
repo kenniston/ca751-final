@@ -38,19 +38,18 @@ using namespace std;
  *
  * @param dataFrameFile Filename of Dataframe to load data.
  */
-void VehicularAppDecider::initialize(string dataFrameFile,
-        vector<int64_t> filter, bool header, int labelColumn)
+void VehicularAppDecider::initialize(string dataFrameFile, ivector filter, int labelColumn)
 {
     if (dataFrameFile.empty()) {
         return;
     }
 
     // Loads the training dataframe.
-    auto df = loadDataframe(dataFrameFile, filter, header, labelColumn);
+    auto res = loadDataframe(dataFrameFile, filter, labelColumn);
 
     // Initialize the
-    treeClassifier = new DecisionTree();
-    treeClassifier->initialize(df, labelColumn);
+    treeClassifier = make_unique<DecisionTree>();
+    treeClassifier->initialize(get<0>(res), get<1>(res), labelColumn);
 }
 
 /**
@@ -58,37 +57,43 @@ void VehicularAppDecider::initialize(string dataFrameFile,
  */
 VehicularAppDecider::~VehicularAppDecider()
 {
-    delete treeClassifier;
+    //delete treeClassifier;
 }
 
 /**
- * Load the Dataframe from a CSV file
+ * Load the Dataframe from a CSV file.
+ * The first line should be the dataframe header.
  *
  * @param filename Filename of Dataframe to load.
+ * @return A tuple with loaded dataframe and header vector
  */
-vector<vector<string>> VehicularAppDecider::loadDataframe(string filename,
-        vector<int64_t> filter, bool header, int labelColumn)
+tuple<dataframe, svector> VehicularAppDecider::loadDataframe(string filename,
+        ivector filter, int labelColumn)
 {
-    vector<vector<string>> result;
+    dataframe result;
+    svector header;
     string line;
     ifstream infile(filename);
 
-    if (header) {
-        getline(infile, line);
-    }
+    int row = 0;
     while (getline(infile, line)) {
         int col = 0;
         string token;
-        vector<string> columns;
+        svector columns;
         stringstream strstream(line);
-        while(getline(strstream, token, ',')) {
-            if (find(filter.begin(), filter.end(), col) != filter.end()) {
-                columns.push_back(token);
+        while (getline(strstream, token, ',')) { // Parse columns
+            if (!filter.empty()) {
+                if (find(filter.begin(), filter.end(), col) != filter.end()) {
+                    if (row == 0) columns.push_back(token); else header.push_back(token);
+                }
+            } else {
+                if (row == 0) columns.push_back(token); else header.push_back(token);
             }
             col++;
         }
         result.push_back(columns);
+        row++;
     }
 
-    return result;
+    return tuple<dataframe, svector>{result, header};
 }

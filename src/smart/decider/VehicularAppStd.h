@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2022 Kenniston Arraes Bonfim <kenniston@gmail.com>
+// Copyright (C) 2022 kenniston <>
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 //
@@ -19,34 +19,24 @@
 //
 // @author  Kenniston Arraes Bonfim
 // @email   kenniston@gmail.com
-// @date    19/06/2022
+// @date    25/06/2022
 // @version 1.0
 //
+#ifndef DECIDER_VEHICULARAPP_STD_H_
+#define DECIDER_VEHICULARAPP_STD_H_
 
-#ifndef APP_VEHICULAR_DECIDER_H_
-#define APP_VEHICULAR_DECIDER_H_
-
-#include <tuple>
 #include <string>
-#include <memory>
-#include "classifier/DecisionTree.h"
-#include "VehicularAppStd.h"
+#include <vector>
 
 using namespace std;
 
-class VehicularAppDecider {
-public:
-    virtual ~VehicularAppDecider();
+/** @brief Vehicular Application data types */
+typedef vector<vector<string>> dataframe;
+typedef vector<string> svector;
+typedef vector<int64_t> ivector;
+typedef vector<float> fvector;
 
-    /** @brief General Decider initialization function */
-    void initialize(string dataFrameFile, ivector filter, int labelColumn);
+/** @brief Check if the string value is a number */
+bool isNumber(string value);
 
-protected:
-    /** @brief Decision Tree Classifier */
-    unique_ptr<DecisionTree> treeClassifier;
-
-    /** @brief Load the Dataframe from a CSV file */
-    tuple<dataframe, svector> loadDataframe(string filename, ivector filter, int labelColumn);
-};
-
-#endif /* APP_VEHICULAR_DECIDER_H_ */
+#endif /* DECIDER_VEHICULARAPP_STD_H_ */

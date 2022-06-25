@@ -24,7 +24,6 @@
 //
 
 #include <iostream>
-#include <algorithm>
 #include "DecisionTree.h"
 
 using namespace std;
@@ -34,29 +33,21 @@ using namespace std;
  *
  * @param df Decision Tree training dataframe.
  */
-void DecisionTree::initialize(vector<vector<string>> df, int classColumn)
+void DecisionTree::initialize(vector<vector<string>> df, svector header, int classColumn)
 {
+    this->df = df;
+    this->header = header;
     this->classColumn = classColumn;
-    this->dataframe = df;
 }
 
 /**
- * Destructor used to free allocated memory.
- */
-DecisionTree::~DecisionTree()
-{
-
-}
-
-/**
- * Returns a class-count map from a dataframe
+ * Returns a class-count map from a dataframe.
  *
  * @return A map with class count.
  */
 map<string, int> DecisionTree::targetCount() {
     map<string, int> result;
-
-    vector<string> column = getColumn(classColumn);
+    svector column = getColumn(classColumn);
     for (string value : column) {
         auto idx = result.find(value);
         if (idx == result.end()) {
@@ -64,92 +55,107 @@ map<string, int> DecisionTree::targetCount() {
         }
         result[value] += 1;
     }
-
     return result;
 }
 
 /**
  * Return a dataframe column.
  *
- * @param index Index for a column in the dataframe
- * @return A column vector
+ * @param index Index for a column in the dataframe.
+ * @return A column vector.
  */
-vector<string> DecisionTree::getColumn(int index){
-    vector<string> column;
-
-    for (vector<string> row : dataframe) {
+svector DecisionTree::getColumn(int index){
+    svector column;
+    for (svector row : df) {
         column.push_back(row[index]);
     }
-
     return column;
 }
-
 
 /**
  * Return a unique values for a column in the dataframe.
  *
  * @param dataframe Dataframe with rows and columns.
- * @param labelColum Index for label column in dataframe
+ * @param labelColum Index for label column in dataframe.
  * @return A set of unique values from the label column in the dataframe.
  */
 set<string> DecisionTree::uniqueValues() {
     set<string> result;
-    for (vector<string> row : dataframe) {
+    for (svector row : df) {
         result.insert(row[classColumn]);
     }
     return result;
 }
 
 /**
- * Check if the string value is a number
+ * Partitions a dataset.
+ * For each row in the dataset, check if it matches the question.
+ * If so, add it to 'true rows', otherwise, add it to 'false rows'.
  *
- * @param value String to check the value
+ * @param df Dataframe with rows and columns.
+ * @param question The question to match.
+ * @return A tuple with true and false rows.
  */
-bool DecisionTree::isNumber(string value) {
-     return !value.empty() && std::find_if(value.begin(), value.end(),
-             [](unsigned char c) { return !std::isdigit(c); }) == value.end();
+tuple<dataframe, dataframe> DecisionTree::partition(dataframe df, shared_ptr<DecisionTree::Question> question) {
+    dataframe trueRows;
+    dataframe falseRows;
+
+    for (svector row : df) {
+        if (question->match(row)) {
+            trueRows.push_back(row);
+        } else {
+            falseRows.push_back(row);
+        }
+    }
+    return tuple<dataframe, dataframe>{ trueRows, falseRows };
 }
 
 /**
  * Decision Tree Question Constructor with column
  * index and column value.
  *
- * @param column The column index for this question
- * @param value The column value for this question
+ * @param column The column index for this question.
+ * @param value The column value for this question.
+ * @param name The name of this question.
  */
-DecisionTree::Question::Question(int column, string value) {
+DecisionTree::Question::Question(int column, string value, string name) {
     this->column = column;
     this->value = value;
+    this->name = name;
 }
 
 /**
  * Compare the feature value in an row to the feature
- * value in this question
+ * value in this question.
  *
- * @param row The row from dataframe to test
+ * @param row The row from dataframe to test.
  * @return A boolean value for the equality of the row
- *         value and the question value
+ *         value and the question value.
  */
-bool DecisionTree::Question::match(vector<string> row) {
+bool DecisionTree::Question::match(svector row) {
     string val = row[column];
     if (isNumber(val)) {
-        int v1 = atof(value);
-        int v2 = atof(val);
+        double v1 = stod(value);
+        double v2 = stod(val);
         return v1 >= v2;
     } else {
         return val == value;
     }
 }
 
-/** @brief Print the question */
+/**
+ * Print the question.
+ */
 void DecisionTree::Question::print() {
-
-    cout << "Example value "
+    string condition = "==";
+    if (isNumber(value)) condition = ">=";
+    cout << "Is " << name << " " << condition << " " << value << "? \n";
 }
 
-#include <set>
+
+
 int main() {
-    vector<vector<string>> dataframe = {
+    dataframe df = {
         {"Green", "3", "Apple"},
         {"Yellow", "3", "Apple"},
         {"Red", "1", "Grape"},
@@ -157,20 +163,54 @@ int main() {
         {"Yellow", "3", "Lemon"}
     };
 
-    DecisionTree *d = new DecisionTree();
-    d->initialize(dataframe, 2);
+    // Initialize test
+    unique_ptr<DecisionTree> d = make_unique<DecisionTree>();
+    d->initialize(df, {"color", "diameter", "label"}, 2);
 
+    // Target count test
     map<string, int>::iterator itr;
     map<string, int> m = d->targetCount();
     for (itr = m.begin(); itr != m.end(); ++itr) {
         cout << itr->first << ": " << itr->second << "\n";
     }
 
-    cout << "3 is a number? " << d->isNumber("3") << "\n";
-    cout << "Apple is a number? " << d->isNumber("Apple") << "\n";
+    // isNumber Tests
+    cout << "3 is a number? " << isNumber("3") << "\n";
+    cout << "Apple is a number? " << isNumber("Apple") << "\n";
 
-    delete d;
+    // Question tests
+    auto q1 = DecisionTree::Question(1, "3", "diameter");
+    q1.print();
+    auto q2 = DecisionTree::Question(0, "Green", "color");
+    q2.print();
 
+    svector row = df[0];
+    cout << "Q2 Match (color == Green) => " << q2.match(row) << "\n==============\n";
+
+    // Partition test
+    shared_ptr<DecisionTree::Question> q3 = make_shared<DecisionTree::Question>(0, "Red", "color");
+    q3->print();
+    auto part = d->partition(df, q3);
+    // Print all Red rows
+    cout << "Red rows: \n";
+    for (auto row : get<0>(part)){
+        cout << "  [";
+        for (auto col = row.begin(); col != row.end(); ++col) {
+            cout << *col;
+            if (col+1 != row.end()) cout << ",";
+        }
+        cout << "]\n";
+    }
+
+    cout << "Other rows: \n";
+    for (auto row : get<1>(part)){
+        cout << "  [";
+        for (auto col = row.begin(); col != row.end(); ++col) {
+            cout << *col;
+            if (col+1 != row.end()) cout << ",";
+        }
+        cout << "]\n";
+    }
 
     return 0;
 }
