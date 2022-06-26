@@ -37,8 +37,6 @@ using namespace decisiontree;
 
 class VehicularAppDecider {
 public:
-    virtual ~VehicularAppDecider();
-
     /** @brief General Decider initialization function */
     void initialize(string dataFrameFile, ivector filter, int labelColumn);
 

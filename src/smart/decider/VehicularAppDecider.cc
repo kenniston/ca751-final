@@ -53,22 +53,16 @@ void VehicularAppDecider::initialize(string dataFrameFile, ivector filter, int l
 }
 
 /**
- * Destructor used to free allocated memory.
- */
-VehicularAppDecider::~VehicularAppDecider()
-{
-    //delete treeClassifier;
-}
-
-/**
  * Load the Dataframe from a CSV file.
  * The first line should be the dataframe header.
  *
  * @param filename Filename of Dataframe to load.
+ * @param filter Dataframe column filter
+ * @param labelColumn Index for label column in dataframe.
  * @return A tuple with loaded dataframe and header vector
  */
 tuple<dataframe, svector> VehicularAppDecider::loadDataframe(string filename,
-        ivector filter, int labelColumn)
+    ivector filter, int labelColumn)
 {
     dataframe result;
     svector header;
