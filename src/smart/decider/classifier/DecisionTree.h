@@ -79,10 +79,10 @@ public:
     virtual void initialize(dataframe df, svector header, int classColumn);
 
     /** @brief Returns a class-count map from a dataframe **/
-    virtual map<string, int> targetCount(dataframe df, int target);
+    virtual map<string, int> labelCount(dataframe df, int column);
 
     /** @brief Return a unique values for a column in the dataframe */
-    virtual set<string> uniqueValues(dataframe df, int target);
+    virtual set<string> uniqueValues(dataframe df, int column);
 
     /** @brief Return a dataframe column */
     virtual svector getColumn(dataframe df, int index);
@@ -91,13 +91,13 @@ public:
     virtual tuple<dataframe, dataframe> partition(dataframe df, shared_ptr<DecisionTree::Question> question);
 
     /** @brief Calculate the Gini Impurity for dataframe */
-    virtual double gini(dataframe df, int target);
+    virtual double gini(dataframe df, int labelColumn);
 
     /** @brief Information Gain */
-    virtual double infoGain(dataframe left, dataframe right, int target, double uncertainty);
+    virtual double infoGain(dataframe left, dataframe right, int labelColumn, double uncertainty);
 
     /** @brief Find the best question and information gain */
-    virtual tuple<double, shared_ptr<DecisionTree::Question>> findBestSplit(dataframe df, int target);
+    virtual tuple<double, shared_ptr<DecisionTree::Question>> findBestSplit(dataframe df, int labelColumn);
 
 protected:
     /** @brief The training dataframe */

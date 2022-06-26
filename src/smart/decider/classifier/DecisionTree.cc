@@ -45,13 +45,13 @@ void DecisionTree::initialize(vector<vector<string>> df, svector header, int cla
  * Returns a class-count map from a dataframe.
  *
  * @param df Dataframe with rows and columns.
- * @param target Class column in the dataframe.
+ * @param column Class column in the dataframe.
  * @return A map with class count.
  */
-map<string, int> DecisionTree::targetCount(dataframe df, int target) {
+map<string, int> DecisionTree::labelCount(dataframe df, int column) {
     map<string, int> result;
-    svector column = getColumn(df, target);
-    for (string value : column) {
+    svector columnRows = getColumn(df, column);
+    for (string value : columnRows) {
         auto idx = result.find(value);
         if (idx == result.end()) {
             result[value] = 0;
@@ -80,13 +80,13 @@ svector DecisionTree::getColumn(dataframe df, int index){
  * Return a unique values for a column in the dataframe.
  *
  * @param dataframe Dataframe with rows and columns.
- * @param target Index for label column in dataframe.
+ * @param column Index for label column in dataframe.
  * @return A set of unique values from the label column in the dataframe.
  */
-set<string> DecisionTree::uniqueValues(dataframe df, int target) {
+set<string> DecisionTree::uniqueValues(dataframe df, int column) {
     set<string> result;
     for (svector row : df) {
-        result.insert(row[target]);
+        result.insert(row[column]);
     }
     return result;
 }
@@ -120,8 +120,8 @@ tuple<dataframe, dataframe> DecisionTree::partition(dataframe df, shared_ptr<Dec
  * @param df Dataframe with rows and columns.
  * @return Dataframe Gini impurity value.
  */
-double DecisionTree::gini(dataframe df, int target) {
-    auto count = targetCount(df, target);
+double DecisionTree::gini(dataframe df, int labelColumn) {
+    auto count = labelCount(df, labelColumn);
     double impurity = 1;
     for (auto m : count) {
         double labelProbability = (double) m.second / df.size();
@@ -137,21 +137,27 @@ double DecisionTree::gini(dataframe df, int target) {
  *
  * @param left  Left dataframe with rows and columns.
  * @param right Right dataframe with rows and columns.
- * @param target Index for label column in dataframe.
+ * @param labelColumn Index for label column in dataframe.
  * @return Information gain value.
  */
-double DecisionTree::infoGain(dataframe left, dataframe right, int target, double uncertainty) {
+double DecisionTree::infoGain(dataframe left, dataframe right, int labelColumn, double uncertainty) {
     double p = (double) left.size() / (left.size() + right.size());
-    return uncertainty - p * gini(left, target) - (1 - p) * gini(right, target);
+    return uncertainty - p * gini(left, labelColumn) - (1 - p) * gini(right, labelColumn);
 }
 
-/** @brief Find the best question and information gain */
-tuple<double, shared_ptr<DecisionTree::Question>> DecisionTree::findBestSplit(dataframe df, int target) {
+/**
+ * Find the best question and information gain
+ *
+ * @param df Dataframe with rows and columns.
+ * @param labelColumn Index for label column in dataframe.
+ * @return The best question and the best information gain.
+ */
+tuple<double, shared_ptr<DecisionTree::Question>> DecisionTree::findBestSplit(dataframe df, int labelColumn) {
     double bestGain = 0;
     shared_ptr<DecisionTree::Question> bestQuestion;
 
     // Calculate the uncertainty of the dataframe
-    double uncertainty = gini(df, target);
+    double uncertainty = gini(df, labelColumn);
 
     // Get the dataframe column count
     int columnCount = df[0].size();
@@ -244,7 +250,7 @@ int main() {
 
     // Target count test
     map<string, int>::iterator itr;
-    map<string, int> m = d->targetCount(df, 2);
+    map<string, int> m = d->labelCount(df, 2);
     for (itr = m.begin(); itr != m.end(); ++itr) {
         cout << itr->first << ": " << itr->second << "\n";
     }
