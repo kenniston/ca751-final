@@ -145,6 +145,46 @@ double DecisionTree::infoGain(dataframe left, dataframe right, int target, doubl
     return uncertainty - p * gini(left, target) - (1 - p) * gini(right, target);
 }
 
+/** @brief Find the best question and information gain */
+tuple<double, shared_ptr<DecisionTree::Question>> DecisionTree::findBestSplit(dataframe df, int target) {
+    double bestGain = 0;
+    shared_ptr<DecisionTree::Question> bestQuestion;
+
+    // Calculate the uncertainty of the dataframe
+    double uncertainty = gini(df, target);
+
+    // Get the dataframe column count
+    int columnCount = df[0].size();
+
+    // Search for the best question and best gain in
+    // all columns of the dataframe
+    for (int col = 0; col < columnCount; col++) {
+        // Get unique values from each column to create a question
+        auto values = uniqueValues(df, col);
+
+        // Search for the best question and information
+        // gain from unique values
+        for (auto val : values) {
+            auto question = make_shared<DecisionTree::Question>(col, val, header[col]);
+            auto part = partition(df, question);
+
+            // Ignore this question if it doesn't divide the dataframe
+            if (get<0>(part).size() == 0 || get<1>(part).size() == 0) {
+                continue;
+            }
+
+            // Calculate the information gain from this split
+            double gain = infoGain(get<0>(part), get<1>(part), col, uncertainty);
+            if (gain >= bestGain) {
+                bestGain = gain;
+                bestQuestion = question;
+            }
+        }
+    }
+
+    return tuple<double, shared_ptr<DecisionTree::Question>>{ bestGain, bestQuestion };
+}
+
 /**
  * Decision Tree Question Constructor with column
  * index and column value.
@@ -170,8 +210,8 @@ DecisionTree::Question::Question(int column, string value, string name) {
 bool DecisionTree::Question::match(svector row) {
     string val = row[column];
     if (isNumber(val)) {
-        double v1 = stod(value);
-        double v2 = stod(val);
+        double v1 = stod(val);
+        double v2 = stod(value);
         return v1 >= v2;
     } else {
         return val == value;
@@ -281,6 +321,11 @@ int main() {
     auto rpart = d->partition(df, q5);
     double redGain = d->infoGain(get<0>(rpart), get<1>(rpart), 2, uncertainty);
     cout << "Red Gain: " << redGain << "\n";
+
+    // Best split test
+    auto spart = d->findBestSplit(df, 2);
+    cout << "Best Question: \n";
+    get<1>(spart)->print();
 
     return 0;
 }

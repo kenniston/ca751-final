@@ -96,6 +96,9 @@ public:
     /** @brief Information Gain */
     virtual double infoGain(dataframe left, dataframe right, int target, double uncertainty);
 
+    /** @brief Find the best question and information gain */
+    virtual tuple<double, shared_ptr<DecisionTree::Question>> findBestSplit(dataframe df, int target);
+
 protected:
     /** @brief The training dataframe */
     dataframe data;
