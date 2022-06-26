@@ -34,9 +34,11 @@
 using namespace std;
 
 /**
- * General Decider Setup
+ * General Decider Setup.
  *
  * @param dataFrameFile Filename of Dataframe to load data.
+ * @param filter Dataframe column filter.
+ * @param labelColumn Index for label column in dataframe.
  */
 void VehicularAppDecider::initialize(string dataFrameFile, ivector filter, int labelColumn)
 {
@@ -57,9 +59,9 @@ void VehicularAppDecider::initialize(string dataFrameFile, ivector filter, int l
  * The first line should be the dataframe header.
  *
  * @param filename Filename of Dataframe to load.
- * @param filter Dataframe column filter
+ * @param filter Dataframe column filter.
  * @param labelColumn Index for label column in dataframe.
- * @return A tuple with loaded dataframe and header vector
+ * @return A tuple with loaded dataframe and header vector.
  */
 tuple<dataframe, svector> VehicularAppDecider::loadDataframe(string filename,
     ivector filter, int labelColumn)
