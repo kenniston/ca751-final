@@ -29,10 +29,11 @@
 #include <tuple>
 #include <string>
 #include <memory>
-#include "classifier/DecisionTree.h"
-#include "VehicularAppStd.h"
+#include "DeciderStd.h"
+#include "classifier/decisointree/DecisionTree.h"
 
 using namespace std;
+using namespace decisiontree;
 
 class VehicularAppDecider {
 public:

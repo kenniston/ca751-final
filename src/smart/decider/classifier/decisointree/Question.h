@@ -19,33 +19,31 @@
 //
 // @author  Kenniston Arraes Bonfim
 // @email   kenniston@gmail.com
-// @date    19/06/2022
+// @date    26/06/2022
 // @version 1.0
 //
+#ifndef CLASSIFIER_DECISOINTREE_QUESTION_H_
+#define CLASSIFIER_DECISOINTREE_QUESTION_H_
 
-#ifndef CLASSIFIER_DECISIONTREE_H_
-#define CLASSIFIER_DECISIONTREE_H_
-
-#include <set>
-#include <map>
 #include <string>
-#include <memory>
-#include "../VehicularAppStd.h"
 
-using namespace std;
+#include "../../DeciderStd.h"
 
-/**
- * @brief
- * Decison Tree Class
- */
-class DecisionTree {
-public:
+namespace decisiontree {
+    using namespace std;
+
     /**
      * @brief
      * A Question is used to partition a dataframe.
      * This class just records a column number and a column value.
      * The 'match' method is used to compare the feature value in
      * an example to the feature value stored in the question.
+     *
+     * @author Kenniston Arraes Bonfim
+     *
+     * @ingroup DecisionTree
+     *
+     * @see DecisionTree
      */
     class Question {
     public:
@@ -58,8 +56,8 @@ public:
         /** @brief Compare the feature value in an row to the feature value in this question */
         virtual bool match(svector row);
 
-        /** @brief Print the question */
-        virtual void print();
+        /** @brief Return a question information string */
+        virtual string to_string();
 
     protected:
         /** @brief Column index for this question in dataframe */
@@ -72,42 +70,6 @@ public:
         string name;
     };
 
-    /** brief Decision Tree destructor */
-    virtual ~DecisionTree() = default;
+} // namespace decisiontree
 
-    /** @brief General Decision Tree initialization */
-    virtual void initialize(dataframe df, svector header, int classColumn);
-
-    /** @brief Returns a class-count map from a dataframe **/
-    virtual map<string, int> labelCount(dataframe df, int column);
-
-    /** @brief Return a unique values for a column in the dataframe */
-    virtual set<string> uniqueValues(dataframe df, int column);
-
-    /** @brief Return a dataframe column */
-    virtual svector getColumn(dataframe df, int index);
-
-    /** @brief For each row in the dataset, check if it matches the question */
-    virtual tuple<dataframe, dataframe> partition(dataframe df, shared_ptr<DecisionTree::Question> question);
-
-    /** @brief Calculate the Gini Impurity for dataframe */
-    virtual double gini(dataframe df, int labelColumn);
-
-    /** @brief Information Gain */
-    virtual double infoGain(dataframe left, dataframe right, int labelColumn, double uncertainty);
-
-    /** @brief Find the best question and information gain */
-    virtual tuple<double, shared_ptr<DecisionTree::Question>> findBestSplit(dataframe df, int labelColumn);
-
-protected:
-    /** @brief The training dataframe */
-    dataframe data;
-
-    /** @brief Dataframe header */
-    svector header;
-
-    /** @brief ID for the class column in dataframe */
-    int classColumn;
-};
-
-#endif /* CLASSIFIER_DECISIONTREE_H_ */
+#endif /* CLASSIFIER_DECISOINTREE_QUESTION_H_ */
