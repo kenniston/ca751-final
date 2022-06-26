@@ -79,20 +79,26 @@ public:
     virtual void initialize(dataframe df, svector header, int classColumn);
 
     /** @brief Returns a class-count map from a dataframe **/
-    virtual map<string, int> targetCount();
+    virtual map<string, int> targetCount(dataframe df, int target);
 
     /** @brief Return a unique values for a column in the dataframe */
-    virtual set<string> uniqueValues();
+    virtual set<string> uniqueValues(dataframe df, int target);
 
     /** @brief Return a dataframe column */
-    virtual svector getColumn(int index);
+    virtual svector getColumn(dataframe df, int index);
 
     /** @brief For each row in the dataset, check if it matches the question */
     virtual tuple<dataframe, dataframe> partition(dataframe df, shared_ptr<DecisionTree::Question> question);
 
+    /** @brief Calculate the Gini Impurity for dataframe */
+    virtual double gini(dataframe df, int target);
+
+    /** @brief Information Gain */
+    virtual double infoGain(dataframe left, dataframe right, int target, double uncertainty);
+
 protected:
     /** @brief The training dataframe */
-    dataframe df;
+    dataframe data;
 
     /** @brief Dataframe header */
     svector header;

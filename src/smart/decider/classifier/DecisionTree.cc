@@ -23,6 +23,7 @@
 // @version 1.0
 //
 
+#include <math.h>
 #include <iostream>
 #include "DecisionTree.h"
 
@@ -35,7 +36,7 @@ using namespace std;
  */
 void DecisionTree::initialize(vector<vector<string>> df, svector header, int classColumn)
 {
-    this->df = df;
+    this->data = df;
     this->header = header;
     this->classColumn = classColumn;
 }
@@ -43,11 +44,13 @@ void DecisionTree::initialize(vector<vector<string>> df, svector header, int cla
 /**
  * Returns a class-count map from a dataframe.
  *
+ * @param df Dataframe with rows and columns.
+ * @param target Class column in the dataframe.
  * @return A map with class count.
  */
-map<string, int> DecisionTree::targetCount() {
+map<string, int> DecisionTree::targetCount(dataframe df, int target) {
     map<string, int> result;
-    svector column = getColumn(classColumn);
+    svector column = getColumn(df, target);
     for (string value : column) {
         auto idx = result.find(value);
         if (idx == result.end()) {
@@ -61,10 +64,11 @@ map<string, int> DecisionTree::targetCount() {
 /**
  * Return a dataframe column.
  *
+ * @param df Dataframe with rows and columns.
  * @param index Index for a column in the dataframe.
  * @return A column vector.
  */
-svector DecisionTree::getColumn(int index){
+svector DecisionTree::getColumn(dataframe df, int index){
     svector column;
     for (svector row : df) {
         column.push_back(row[index]);
@@ -76,13 +80,13 @@ svector DecisionTree::getColumn(int index){
  * Return a unique values for a column in the dataframe.
  *
  * @param dataframe Dataframe with rows and columns.
- * @param labelColum Index for label column in dataframe.
+ * @param target Index for label column in dataframe.
  * @return A set of unique values from the label column in the dataframe.
  */
-set<string> DecisionTree::uniqueValues() {
+set<string> DecisionTree::uniqueValues(dataframe df, int target) {
     set<string> result;
     for (svector row : df) {
-        result.insert(row[classColumn]);
+        result.insert(row[target]);
     }
     return result;
 }
@@ -108,6 +112,37 @@ tuple<dataframe, dataframe> DecisionTree::partition(dataframe df, shared_ptr<Dec
         }
     }
     return tuple<dataframe, dataframe>{ trueRows, falseRows };
+}
+
+/**
+ * Calculate the Gini Impurity for dataframe.
+ *
+ * @param df Dataframe with rows and columns.
+ * @return Dataframe Gini impurity value.
+ */
+double DecisionTree::gini(dataframe df, int target) {
+    auto count = targetCount(df, target);
+    double impurity = 1;
+    for (auto m : count) {
+        double labelProbability = (double) m.second / df.size();
+        impurity -= pow(labelProbability, 2);
+    }
+    return impurity;
+}
+
+/**
+ * Information Gain.
+ * The uncertainty of the starting node, minus the weighted impurity of
+ * two child nodes.
+ *
+ * @param left  Left dataframe with rows and columns.
+ * @param right Right dataframe with rows and columns.
+ * @param target Index for label column in dataframe.
+ * @return Information gain value.
+ */
+double DecisionTree::infoGain(dataframe left, dataframe right, int target, double uncertainty) {
+    double p = (double) left.size() / (left.size() + right.size());
+    return uncertainty - p * gini(left, target) - (1 - p) * gini(right, target);
 }
 
 /**
@@ -169,7 +204,7 @@ int main() {
 
     // Target count test
     map<string, int>::iterator itr;
-    map<string, int> m = d->targetCount();
+    map<string, int> m = d->targetCount(df, 2);
     for (itr = m.begin(); itr != m.end(); ++itr) {
         cout << itr->first << ": " << itr->second << "\n";
     }
@@ -201,7 +236,6 @@ int main() {
         }
         cout << "]\n";
     }
-
     cout << "Other rows: \n";
     for (auto row : get<1>(part)){
         cout << "  [";
@@ -211,6 +245,42 @@ int main() {
         }
         cout << "]\n";
     }
+
+    // Gini tests
+    dataframe noMixing = {
+        {"Green", "3", "Apple"},
+        {"Yellow", "3", "Apple"},
+    };
+    cout << "noMixing Gini: " << d->gini(noMixing, 2) << "\n";
+
+    dataframe someMixing = {
+       {"Green", "3", "Apple"},
+       {"Red", "1", "Grape"},
+    };
+    cout << "someMixing Gini: " << d->gini(someMixing, 2) << "\n";
+
+    dataframe lotsOfMixing = {
+       {"Green", "3", "Apple"},
+       {"Orange", "1", "Orange"},
+       {"Red", "1", "Grape"},
+       {"Yellow", "1", "Grapefruit"},
+       {"Blue", "1", "Blueberry"},
+    };
+    cout << "lotsOfMixing Gini: " << d->gini(lotsOfMixing, 2) << "\n";
+
+    // Information Gain tests
+    double uncertainty = d->gini(df, 2);
+    cout << "current uncertainty: " << uncertainty << "\n";
+
+    shared_ptr<DecisionTree::Question> q4 = make_shared<DecisionTree::Question>(0, "Green", "color");
+    auto gpart = d->partition(df, q4);
+    double greenGain = d->infoGain(get<0>(gpart), get<1>(gpart), 2, uncertainty);
+    cout << "Green Gain: " << greenGain << "\n";
+
+    shared_ptr<DecisionTree::Question> q5 = make_shared<DecisionTree::Question>(0, "Red", "color");
+    auto rpart = d->partition(df, q5);
+    double redGain = d->infoGain(get<0>(rpart), get<1>(rpart), 2, uncertainty);
+    cout << "Red Gain: " << redGain << "\n";
 
     return 0;
 }
