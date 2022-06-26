@@ -39,7 +39,9 @@ OBJS = \
     $O/smart/app/VehicularRSU11p.o \
     $O/smart/decider/DeciderStd.o \
     $O/smart/decider/VehicularAppDecider.o \
+    $O/smart/decider/classifier/decisointree/DecisionNode.o \
     $O/smart/decider/classifier/decisointree/DecisionTree.o \
+    $O/smart/decider/classifier/decisointree/Leaf.o \
     $O/smart/decider/classifier/decisointree/Question.o \
     $O/smart/mac/VehicularMac1610_4.o \
     $O/veins_inet/VeinsInetApplicationBase.o \
