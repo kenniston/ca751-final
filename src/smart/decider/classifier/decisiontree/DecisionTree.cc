@@ -215,7 +215,8 @@ namespace decisiontree {
      * @param df Dataframe with rows and columns.
      * @param labelColumn Index for label column in dataframe.
      */
-    void DecisionTree::build(dataframe df, int labelColumn) {
+    void DecisionTree::build(dataframe df, int labelColumn)
+    {
         root = buildTree(df, labelColumn);
     }
 
@@ -297,6 +298,38 @@ namespace decisiontree {
         }
 
         return out.str();
+    }
+
+    /**
+     * Classify the input data.
+     *
+     * @param data A vector with columns to classify.
+     * @return A map with the prediction result.
+     */
+    map<string, int> DecisionTree::classify(svector data)
+    {
+        return classifyData(data, root);
+    }
+
+    /**
+     * Classify the input data into the tree.
+     *
+     * @param data A vector with columns to classify.
+     * @param node A node (leaf or decision node) to validade.
+     * @return A map with the prediction result.
+     */
+    map<string, int> DecisionTree::classifyData(svector data, shared_ptr<INode> node)
+    {
+        if (shared_ptr<Leaf> leaf = dynamic_pointer_cast<Leaf>(node)) {
+            return leaf->getPredictions();
+        } else {
+            shared_ptr<DecisionNode> dnode = dynamic_pointer_cast<DecisionNode>(node);
+            if (dnode->question->match(data)) {
+                return classifyData(data, dnode->trueBranch);
+            } else {
+                return classifyData(data, dnode->falseBranch);
+            }
+        }
     }
 
 } // namespace decisiontree
@@ -409,6 +442,19 @@ int main() {
     cout << "==============" << endl;
     cout << "Tree:" << endl;
     cout << d->str();
+
+    // Classify test
+    cout << "==============" << endl;
+    cout << "Prediction for df[0]:" << endl;
+    auto predictions = d->classify(df[0]);
+    cout << "Predict {";
+    for (map<string, int>::iterator itr = predictions.begin(); itr != predictions.end(); ++itr) {
+        cout << "'" << itr->first << "': " << itr->second;
+        if (next(itr) != predictions.end()) {
+            cout << ", ";
+        }
+    }
+    cout << "}" << endl;
 
     return 0;
 }
