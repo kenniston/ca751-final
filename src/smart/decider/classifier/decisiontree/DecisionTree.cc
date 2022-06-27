@@ -27,6 +27,7 @@
 
 #include <math.h>
 #include <sstream>
+#include <numeric>
 #include <iostream>
 
 #include "../decisiontree/DecisionNode.h"
@@ -306,7 +307,7 @@ namespace decisiontree {
      * @param data A vector with columns to classify.
      * @return A map with the prediction result.
      */
-    map<string, int> DecisionTree::classify(svector data)
+    map<string, float> DecisionTree::classify(svector data)
     {
         return classifyData(data, root);
     }
@@ -316,12 +317,22 @@ namespace decisiontree {
      *
      * @param data A vector with columns to classify.
      * @param node A node (leaf or decision node) to validade.
-     * @return A map with the prediction result.
+     * @return A map with the label and percentage of prediction for each label.
      */
-    map<string, int> DecisionTree::classifyData(svector data, shared_ptr<INode> node)
+    map<string, float> DecisionTree::classifyData(svector data, shared_ptr<INode> node)
     {
         if (shared_ptr<Leaf> leaf = dynamic_pointer_cast<Leaf>(node)) {
-            return leaf->getPredictions();
+            // Calculate the percentage of each label
+            auto predictions = leaf->getPredictions();
+            map<string, float> result;
+
+            // Calculate the total of items for this prediction
+            float total = accumulate(predictions.begin(), predictions.end(), 0,
+                    [](auto sum, auto &item){ return sum + item.second; });
+            for (auto itr = predictions.begin(); itr != predictions.end(); ++itr) {
+                result[itr->first] = itr->second / total;
+            }
+            return result;
         } else {
             shared_ptr<DecisionNode> dnode = dynamic_pointer_cast<DecisionNode>(node);
             if (dnode->question->match(data)) {
@@ -446,15 +457,38 @@ int main() {
     // Classify test
     cout << "==============" << endl;
     cout << "Prediction for df[0]:" << endl;
-    auto predictions = d->classify(df[0]);
+    auto predictions = d->classify(df[1]);
     cout << "Predict {";
-    for (map<string, int>::iterator itr = predictions.begin(); itr != predictions.end(); ++itr) {
-        cout << "'" << itr->first << "': " << itr->second;
+    for (auto itr = predictions.begin(); itr != predictions.end(); ++itr) {
+        cout << "'" << itr->first << "': " << itr->second * 100 << "%";
         if (next(itr) != predictions.end()) {
             cout << ", ";
         }
     }
     cout << "}" << endl;
+
+    // Test Dataframe
+    cout << "==============" << endl;
+    cout << "Test Dataframe:" << endl;
+    dataframe testdf = {
+        {"Green", "3", "Apple"},
+        {"Yellow", "4", "Apple"},
+        {"Red", "2", "Grape"},
+        {"Red", "1", "Grape"},
+        {"Yellow", "3", "Lemon"}
+    };
+    for (auto row : testdf) {
+        auto predictions = d->classify(row);
+        cout << "Actual: " << row[2] << ". ";
+        cout << "Predicted {";
+        for (auto itr = predictions.begin(); itr != predictions.end(); ++itr) {
+            cout << "'" << itr->first << "': " << itr->second * 100 << "%";
+            if (next(itr) != predictions.end()) {
+                cout << ", ";
+            }
+        }
+        cout << "}" << endl;
+    }
 
     return 0;
 }

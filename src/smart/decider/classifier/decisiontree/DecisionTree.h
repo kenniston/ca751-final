@@ -81,7 +81,7 @@ namespace decisiontree {
         virtual string str();
 
         /** @brief Classify the input data */
-        virtual map<string, int> classify(svector data);
+        virtual map<string, float> classify(svector data);
 
     protected:
         /** @brief The training dataframe */
@@ -103,7 +103,7 @@ namespace decisiontree {
         virtual string to_string(shared_ptr<INode> node, string spacing = "");
 
         /** @brief Classify the input data into the tree */
-        map<string, int> classifyData(svector data, shared_ptr<INode> node);
+        map<string, float> classifyData(svector data, shared_ptr<INode> node);
     };
 
 } // namespace decisiontree
