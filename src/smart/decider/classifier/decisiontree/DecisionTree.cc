@@ -23,13 +23,14 @@
 // @version 1.0
 //
 
+#include "../decisiontree/DecisionTree.h"
+
 #include <math.h>
 #include <sstream>
 #include <iostream>
 
-#include "Leaf.h"
-#include "DecisionNode.h"
-#include "DecisionTree.h"
+#include "../decisiontree/DecisionNode.h"
+#include "../decisiontree/Leaf.h"
 
 namespace decisiontree {
 

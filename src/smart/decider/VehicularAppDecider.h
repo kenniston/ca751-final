@@ -29,8 +29,9 @@
 #include <tuple>
 #include <string>
 #include <memory>
+
+#include "classifier/decisiontree/DecisionTree.h"
 #include "DeciderStd.h"
-#include "classifier/decisointree/DecisionTree.h"
 
 using namespace std;
 using namespace decisiontree;

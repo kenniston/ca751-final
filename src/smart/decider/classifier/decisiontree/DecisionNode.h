@@ -22,38 +22,43 @@
 // @date    26/06/2022
 // @version 1.0
 //
-#ifndef CLASSIFIER_DECISOINTREE_LEAF_H_
-#define CLASSIFIER_DECISOINTREE_LEAF_H_
+#ifndef CLASSIFIER_DECISOINTREE_DECISIONNODE_H_
+#define CLASSIFIER_DECISOINTREE_DECISIONNODE_H_
 
-#include <map>
-#include "Node.h"
+#include <string>
+#include <memory>
+
+#include "../decisiontree/Node.h"
+#include "../decisiontree/Question.h"
 
 namespace decisiontree {
     using namespace std;
 
     /**
      * @brief
-     * A Leaf node classifies data.
-     * This holds a dictionary of class -> number of times
-     * it appears in the rows from the training data that
-     * reach this leaf.
+     * A Decision Node asks a question.
+     * This holds a reference to the question, and to the
+     * two child nodes.
      *
      * @author Kenniston Arraes Bonfim
      * @ingroup DecisionTree
      * @see DecisionTree
      */
-    class Leaf: public INode {
+    class DecisionNode: public INode {
     public:
-        /** @brief Leaf construction with predictions map */
-        Leaf(map<string, int> predictions);
+        /** @brief DecisionNode constructor with a question and two branchs (true and false answers to the question) */
+        DecisionNode(shared_ptr<Question> question, shared_ptr<INode> trueBranch, shared_ptr<INode> falseBranch);
 
-        /** @brief Return predictions from this leaf */
-        map<string, int> getPredictions();
-    protected:
-        /** @brief Predictions of this node */
-        map<string, int> predictions;
+        /** @brief The question for this decision node in the tree */
+        shared_ptr<Question> question;
+
+        /** @brief The 'true' child for this decision node in the tree */
+        shared_ptr<INode> trueBranch;
+
+        /** @brief The 'false' child for this decision node in the tree */
+        shared_ptr<INode> falseBranch;
     };
 
 } // namespace decisiontree
 
-#endif /* CLASSIFIER_DECISOINTREE_LEAF_H_ */
+#endif /* CLASSIFIER_DECISOINTREE_DECISIONNODE_H_ */

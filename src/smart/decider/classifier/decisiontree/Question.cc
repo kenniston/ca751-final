@@ -23,10 +23,11 @@
 // @version 1.0
 //
 
+#include "../decisiontree/Question.h"
+
 #include <string>
 #include <sstream>
 
-#include "Question.h"
 
 namespace decisiontree {
 

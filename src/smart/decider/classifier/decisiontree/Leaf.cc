@@ -23,25 +23,27 @@
 // @version 1.0
 //
 
-#include "DecisionNode.h"
+#include "../decisiontree/Leaf.h"
 
 namespace decisiontree {
     using namespace std;
 
     /**
-     * DecisionNode constructor with a question and two
-     * branchs (true and false answers to the question).
+     * Leaf construction with predictions map
      *
-     * @param question The question for this decision node in the tree.
-     * @param trueBranch The 'true' child for this decision node in the tree.
-     * @param falseBranch The 'false' child for this decision node in the tree.
+     * @param prediction A map with a label and occurrences on the label.
      */
-    DecisionNode::DecisionNode(shared_ptr<Question> question,
-            shared_ptr<INode> trueBranch, shared_ptr<INode> falseBranch)
+    Leaf::Leaf(map<string, int> predictions)
     {
-        this->question = question;
-        this->trueBranch = trueBranch;
-        this->falseBranch = falseBranch;
+        this->predictions = predictions;
+    }
+
+    /**
+     * Return predictions from this leaf
+     */
+    map<string, int> Leaf::getPredictions()
+    {
+        return predictions;
     }
 
 } // namespace decisiontree

@@ -30,9 +30,9 @@
 #include <string>
 #include <memory>
 
-#include "Node.h"
-#include "Question.h"
 #include "../../DeciderStd.h"
+#include "../decisiontree/Node.h"
+#include "../decisiontree/Question.h"
 
 namespace decisiontree {
 
@@ -79,6 +79,9 @@ namespace decisiontree {
 
         /** @brief Return a string with tree structure */
         virtual string str();
+
+        /** @brief Classify the input data */
+
 
     protected:
         /** @brief The training dataframe */
