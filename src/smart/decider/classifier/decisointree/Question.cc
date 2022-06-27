@@ -75,7 +75,7 @@ namespace decisiontree {
         stringstream out;
         string condition = "==";
         if (isNumber(value)) condition = ">=";
-        out << "Is " << name << " " << condition << " " << value << "? \n";
+        out << "Is " << name << " " << condition << " " << value << "?";
         return out.str();
     }
 

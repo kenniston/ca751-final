@@ -31,7 +31,7 @@ using namespace std;
 
 /**
  * Check if the string value is a number.
- * @param value String to check the value
+ * @param value String to check the value.
  */
 bool isNumber(string value) {
      return !value.empty() && std::find_if(value.begin(), value.end(),

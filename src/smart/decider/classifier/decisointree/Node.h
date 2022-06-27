@@ -22,38 +22,27 @@
 // @date    26/06/2022
 // @version 1.0
 //
-#ifndef CLASSIFIER_DECISOINTREE_LEAF_H_
-#define CLASSIFIER_DECISOINTREE_LEAF_H_
+#ifndef CLASSIFIER_DECISOINTREE_NODE_H_
+#define CLASSIFIER_DECISOINTREE_NODE_H_
 
-#include <map>
-#include "Node.h"
+#include <string>
 
 namespace decisiontree {
     using namespace std;
 
     /**
      * @brief
-     * A Leaf node classifies data.
-     * This holds a dictionary of class -> number of times
-     * it appears in the rows from the training data that
-     * reach this leaf.
+     * Base interface for decision tree node.
      *
      * @author Kenniston Arraes Bonfim
      * @ingroup DecisionTree
      * @see DecisionTree
      */
-    class Leaf: public INode {
+    class INode {
     public:
-        /** @brief Leaf construction with predictions map */
-        Leaf(map<string, int> predictions);
-
-        /** @brief Return predictions from this leaf */
-        map<string, int> getPredictions();
-    protected:
-        /** @brief Predictions of this node */
-        map<string, int> predictions;
+        virtual ~INode() = default;
     };
 
 } // namespace decisiontree
 
-#endif /* CLASSIFIER_DECISOINTREE_LEAF_H_ */
+#endif /* CLASSIFIER_DECISOINTREE_NODE_H_ */

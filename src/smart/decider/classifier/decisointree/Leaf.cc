@@ -28,4 +28,22 @@
 namespace decisiontree {
     using namespace std;
 
+    /**
+     * Leaf construction with predictions map
+     *
+     * @param prediction A map with a label and occurrences on the label.
+     */
+    Leaf::Leaf(map<string, int> predictions)
+    {
+        this->predictions = predictions;
+    }
+
+    /**
+     * Return predictions from this leaf
+     */
+    map<string, int> Leaf::getPredictions()
+    {
+        return predictions;
+    }
+
 } // namespace decisiontree

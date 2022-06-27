@@ -24,8 +24,11 @@
 //
 
 #include <math.h>
+#include <sstream>
 #include <iostream>
 
+#include "Leaf.h"
+#include "DecisionNode.h"
 #include "DecisionTree.h"
 
 namespace decisiontree {
@@ -176,6 +179,9 @@ namespace decisiontree {
         // Search for the best question and best gain in
         // all columns of the dataframe
         for (int col = 0; col < columnCount; col++) {
+            // Check for label column
+            if (col == labelColumn) continue;
+
             // Get unique values from each column to create a question
             auto values = uniqueValues(df, col);
 
@@ -202,6 +208,96 @@ namespace decisiontree {
         return tuple<double, shared_ptr<Question>>{ bestGain, bestQuestion };
     }
 
+    /**
+     * Builds the tree based on dataframe information (gain and questions)
+     *
+     * @param df Dataframe with rows and columns.
+     * @param labelColumn Index for label column in dataframe.
+     */
+    void DecisionTree::build(dataframe df, int labelColumn) {
+        root = buildTree(df, labelColumn);
+    }
+
+    /**
+     * Builds the tree based on dataframe information (gain and questions)
+     *
+     * @param df Dataframe with rows and columns.
+     * @param labelColumn Index for label column in dataframe.
+     * @return A tree root node.
+     */
+    shared_ptr<INode> DecisionTree::buildTree(dataframe df, int labelColumn)
+    {
+        // Try partitioing the dataset on each of the unique attribute,
+        // calculate the information gain, and return the question that
+        // produces the highest gain.
+        auto spart = findBestSplit(df, labelColumn);
+        double gain = get<0>(spart);
+        shared_ptr<Question> question = get<1>(spart);
+
+        // Base case: no further info gain.
+        // Since there is no further questions, return a leaf.
+        if (gain == 0) {
+            map<string, int> counts = labelCount(df, labelColumn);
+            return dynamic_pointer_cast<INode>(make_shared<Leaf>(counts));
+        }
+
+        // If reach here, it has a useful feature/value to partition on.
+        auto dpart = partition(df, question);
+
+        // Recursively build the 'true' branch.
+        shared_ptr<INode> trueBranch = buildTree(get<0>(dpart), labelColumn);
+
+        // Recursively build the 'false' branch.
+        shared_ptr<INode> falseBranch = buildTree(get<1>(dpart), labelColumn);
+
+        // Return a Decision Node with a question.
+        // This records the best feature/value to ask at this point,
+        // as well as the branches for the question (answers).
+        return dynamic_pointer_cast<INode>(make_shared<DecisionNode>(question, trueBranch, falseBranch));
+    }
+
+    /**
+     * Return a string with tree structure
+     */
+    string DecisionTree::str()
+    {
+        return to_string(root);
+    }
+
+    /**
+     * Return a string with node structure
+     */
+    string DecisionTree::to_string(shared_ptr<INode> node, string spacing)
+    {
+        stringstream out;
+
+        // Leaf node with predictions
+        if (shared_ptr<Leaf> leaf = dynamic_pointer_cast<Leaf>(node)) {
+            out << spacing << "Predict {";
+            auto predictions = leaf->getPredictions();
+            for (map<string, int>::iterator itr = predictions.begin(); itr != predictions.end(); ++itr) {
+                out << "'" << itr->first << "': " << itr->second;
+                if (next(itr) != predictions.end()) {
+                    out << ", ";
+                }
+            }
+            out << "}" << endl;
+            return out.str();
+        } else if (shared_ptr<DecisionNode> dnode = dynamic_pointer_cast<DecisionNode>(node)) {
+            // Question information from Decision Node
+            out << spacing << dnode->question->to_string() << endl;
+
+            // 'True' branch for this node
+            out << spacing << "--> True:" << endl;
+            out << to_string(dnode->trueBranch, spacing + "  ");
+
+            out << spacing << "--> False:" << endl;
+            out << to_string(dnode->falseBranch, spacing + "  ");
+        }
+
+        return out.str();
+    }
+
 } // namespace decisiontree
 
 
@@ -216,52 +312,54 @@ int main() {
         {"Yellow", "3", "Lemon"}
     };
 
+    int labelColumn = 2;
+
     // Initialize test
     unique_ptr<DecisionTree> d = make_unique<DecisionTree>();
-    d->initialize(df, {"color", "diameter", "label"}, 2);
+    d->initialize(df, {"color", "diameter", "label"}, labelColumn);
 
     // Target count test
     map<string, int>::iterator itr;
-    map<string, int> m = d->labelCount(df, 2);
+    map<string, int> m = d->labelCount(df, labelColumn);
     for (itr = m.begin(); itr != m.end(); ++itr) {
-        cout << itr->first << ": " << itr->second << "\n";
+        cout << itr->first << ": " << itr->second << endl;
     }
 
     // isNumber Tests
-    cout << "3 is a number? " << isNumber("3") << "\n";
-    cout << "Apple is a number? " << isNumber("Apple") << "\n";
+    cout << "3 is a number? " << isNumber("3") << endl;
+    cout << "Apple is a number? " << isNumber("Apple") << endl;
 
     // Question tests
     auto q1 = Question(1, "3", "diameter");
-    cout << q1.to_string();
+    cout << q1.to_string() << endl;
     auto q2 = Question(0, "Green", "color");
-    cout << q2.to_string();
+    cout << q2.to_string() << endl;
 
     svector row = df[0];
-    cout << "Q2 Match (color == Green) => " << q2.match(row) << "\n==============\n";
+    cout << "Q2 Match (color == Green) => " << q2.match(row) << endl << "==============" << endl;
 
     // Partition test
     shared_ptr<Question> q3 = make_shared<Question>(0, "Red", "color");
-    cout << q3->to_string();
+    cout << q3->to_string() << endl;
     auto part = d->partition(df, q3);
     // Print all Red rows
-    cout << "Red rows: \n";
+    cout << "Red rows:" << endl;
     for (auto row : get<0>(part)){
         cout << "  [";
         for (auto col = row.begin(); col != row.end(); ++col) {
             cout << *col;
             if (col+1 != row.end()) cout << ",";
         }
-        cout << "]\n";
+        cout << "]" << endl;
     }
-    cout << "Other rows: \n";
+    cout << "Other rows:" << endl;
     for (auto row : get<1>(part)){
         cout << "  [";
         for (auto col = row.begin(); col != row.end(); ++col) {
             cout << *col;
             if (col+1 != row.end()) cout << ",";
         }
-        cout << "]\n";
+        cout << "]" << endl;
     }
 
     // Gini tests
@@ -269,13 +367,13 @@ int main() {
         {"Green", "3", "Apple"},
         {"Yellow", "3", "Apple"},
     };
-    cout << "noMixing Gini: " << d->gini(noMixing, 2) << "\n";
+    cout << "noMixing Gini: " << d->gini(noMixing, labelColumn) << endl;
 
     dataframe someMixing = {
        {"Green", "3", "Apple"},
        {"Red", "1", "Grape"},
     };
-    cout << "someMixing Gini: " << d->gini(someMixing, 2) << "\n";
+    cout << "someMixing Gini: " << d->gini(someMixing, labelColumn) << endl;
 
     dataframe lotsOfMixing = {
        {"Green", "3", "Apple"},
@@ -284,26 +382,32 @@ int main() {
        {"Yellow", "1", "Grapefruit"},
        {"Blue", "1", "Blueberry"},
     };
-    cout << "lotsOfMixing Gini: " << d->gini(lotsOfMixing, 2) << "\n";
+    cout << "lotsOfMixing Gini: " << d->gini(lotsOfMixing, labelColumn) << endl;
 
     // Information Gain tests
-    double uncertainty = d->gini(df, 2);
-    cout << "current uncertainty: " << uncertainty << "\n";
+    double uncertainty = d->gini(df, labelColumn);
+    cout << "current uncertainty: " << uncertainty << endl;
 
     shared_ptr<Question> q4 = make_shared<Question>(0, "Green", "color");
     auto gpart = d->partition(df, q4);
-    double greenGain = d->infoGain(get<0>(gpart), get<1>(gpart), 2, uncertainty);
-    cout << "Green Gain: " << greenGain << "\n";
+    double greenGain = d->infoGain(get<0>(gpart), get<1>(gpart), labelColumn, uncertainty);
+    cout << "Green Gain: " << greenGain << endl;
 
     shared_ptr<Question> q5 = make_shared<Question>(0, "Red", "color");
     auto rpart = d->partition(df, q5);
-    double redGain = d->infoGain(get<0>(rpart), get<1>(rpart), 2, uncertainty);
-    cout << "Red Gain: " << redGain << "\n";
+    double redGain = d->infoGain(get<0>(rpart), get<1>(rpart), labelColumn, uncertainty);
+    cout << "Red Gain: " << redGain << endl;
 
     // Best split test
-    auto spart = d->findBestSplit(df, 2);
-    cout << "Best Question: \n";
-    cout << get<1>(spart)->to_string();
+    auto spart = d->findBestSplit(df, labelColumn);
+    cout << "Best Question:" << endl;
+    cout << get<1>(spart)->to_string() << endl;
+
+    // Build tree and print test
+    d->build(df, labelColumn);
+    cout << "==============" << endl;
+    cout << "Tree:" << endl;
+    cout << d->str();
 
     return 0;
 }

@@ -39,4 +39,10 @@ typedef vector<float> fvector;
 /** @brief Check if the string value is a number */
 bool isNumber(string value);
 
+/** @brief Object instance check */
+template<typename Base, typename T>
+inline bool instanceof(const T *ptr) {
+   return dynamic_cast<const Base*>(ptr) != nullptr;
+}
+
 #endif /* DECIDER_VEHICULARAPP_STD_H_ */

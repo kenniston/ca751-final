@@ -26,9 +26,37 @@
 #define CLASSIFIER_DECISOINTREE_DECISIONNODE_H_
 
 #include <string>
+#include <memory>
+#include "Node.h"
+#include "Question.h"
 
 namespace decisiontree {
     using namespace std;
+
+    /**
+     * @brief
+     * A Decision Node asks a question.
+     * This holds a reference to the question, and to the
+     * two child nodes.
+     *
+     * @author Kenniston Arraes Bonfim
+     * @ingroup DecisionTree
+     * @see DecisionTree
+     */
+    class DecisionNode: public INode {
+    public:
+        /** @brief DecisionNode constructor with a question and two branchs (true and false answers to the question) */
+        DecisionNode(shared_ptr<Question> question, shared_ptr<INode> trueBranch, shared_ptr<INode> falseBranch);
+
+        /** @brief The question for this decision node in the tree */
+        shared_ptr<Question> question;
+
+        /** @brief The 'true' child for this decision node in the tree */
+        shared_ptr<INode> trueBranch;
+
+        /** @brief The 'false' child for this decision node in the tree */
+        shared_ptr<INode> falseBranch;
+    };
 
 } // namespace decisiontree
 

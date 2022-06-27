@@ -30,6 +30,7 @@
 #include <string>
 #include <memory>
 
+#include "Node.h"
 #include "Question.h"
 #include "../../DeciderStd.h"
 
@@ -42,7 +43,6 @@ namespace decisiontree {
      * Decison Tree Class
      *
      * @author Kenniston Arraes Bonfim
-     *
      * @ingroup DecisionTree
      */
     class DecisionTree {
@@ -74,6 +74,12 @@ namespace decisiontree {
         /** @brief Find the best question and information gain */
         virtual tuple<double, shared_ptr<Question>> findBestSplit(dataframe df, int labelColumn);
 
+        /** @brief Builds the tree based on dataframe an store it into root pointer */
+        virtual void build(dataframe df, int labelColumn);
+
+        /** @brief Return a string with tree structure */
+        virtual string str();
+
     protected:
         /** @brief The training dataframe */
         dataframe data;
@@ -83,6 +89,15 @@ namespace decisiontree {
 
         /** @brief ID for the class column in dataframe */
         int classColumn;
+
+        /** @brief The root node of the tree */
+        shared_ptr<INode> root;
+
+        /** @brief Builds the tree based on dataframe information (gain and questions) */
+        virtual shared_ptr<INode> buildTree(dataframe df, int labelColumn);
+
+        /** @brief Return a string with node structure */
+        virtual string to_string(shared_ptr<INode> node, string spacing = "");
     };
 
 } // namespace decisiontree

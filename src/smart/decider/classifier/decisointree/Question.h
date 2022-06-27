@@ -40,9 +40,7 @@ namespace decisiontree {
      * an example to the feature value stored in the question.
      *
      * @author Kenniston Arraes Bonfim
-     *
      * @ingroup DecisionTree
-     *
      * @see DecisionTree
      */
     class Question {
