@@ -19,12 +19,12 @@
            <destProbReroute id="r7"/>
         </interval>
     </rerouter>
-    <rerouter id="rerouter_0" edges="r8">
+    <rerouter id="rerouter_2" edges="r8">
         <interval end="1e9">
            <destProbReroute id="r1"/>
         </interval>
     </rerouter>
-    <rerouter id="rerouter_1" edges="r1">
+    <rerouter id="rerouter_3" edges="r1">
         <interval end="1e9">
            <destProbReroute id="r8"/>
         </interval>

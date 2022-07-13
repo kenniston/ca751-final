@@ -2,8 +2,8 @@
 <launch>
     <copy file="road.net.xml" />
     <copy file="road.rou.xml" />
+    <copy file="road.poly.xml" />
     <copy file="road.view.xml" />
-    <copy file="road.tls.xml" />
     <copy file="road.add.xml" />
     <copy file="road.sumo.cfg" type="config" />
 </launch>

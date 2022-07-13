@@ -115,8 +115,8 @@ void VehicularApp::setup() {
     // Change Icon
     auto host = findHost();
     cDisplayString& disp = host->getDisplayString();
-    disp.setTagArg("i", 0, "smart/node/mercedes,red");
-    disp.setTagArg("is", 0, "");
+    //disp.setTagArg("i", 0, "smart/node/mercedes,red");
+    //disp.setTagArg("is", 0, "");
 
 
     // Configure output files

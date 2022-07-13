@@ -25,13 +25,52 @@
 package smart.simulations.road;
 
 import org.car2x.veins.nodes.RSU;
-import org.car2x.veins.nodes.Scenario;
+import org.car2x.veins.base.connectionManager.ConnectionManager;
+import org.car2x.veins.base.modules.BaseWorldUtility;
+import org.car2x.veins.modules.mobility.traci.TraCIScenarioManager*;
+import org.car2x.veins.modules.obstacle.ObstacleControl;
+import org.car2x.veins.modules.world.annotations.AnnotationManager;
+import org.car2x.veins.nodes.Car;
+import org.car2x.veins.visualizer.roads.RoadsCanvasVisualizer;
 
-network RoadNetwork extends Scenario
+network RoadNetwork //extends Scenario
 {
-    @display("bgb=5400,2500,#A0E0A0,#A0E0A0,0");
+    parameters:
+        double playgroundSizeX @unit(m);
+        double playgroundSizeY @unit(m);
+        double playgroundSizeZ @unit(m);
+        @display("bgb=1242,478,#A0E0A0,#A0E0A0,0");
     submodules:
         rsu[2]: RSU {
-            @display("p=302,208;i=veins/sign/yellowdiamond;is=vs");
+            @display("p=224,196;i=veins/sign/yellowdiamond;is=vs");
         }
+        obstacles: ObstacleControl {
+            @display("p=1162,378");
+        }
+        annotations: AnnotationManager {
+            @display("p=582,378");
+        }
+        connectionManager: ConnectionManager {
+            parameters:
+                @display("p=236,378;i=abstract/multicast");
+        }
+        world: BaseWorldUtility {
+            parameters:
+                playgroundSizeX = veins_eval_by_version(veins_omnetpp_buildnum(), "playgroundSizeX", 1525, "parent.playgroundSizeX");
+                playgroundSizeY = veins_eval_by_version(veins_omnetpp_buildnum(), "playgroundSizeY", 1525, "parent.playgroundSizeY");
+                playgroundSizeZ = veins_eval_by_version(veins_omnetpp_buildnum(), "playgroundSizeZ", 1525, "parent.playgroundSizeZ");
+                @display("p=58,378;i=misc/globe");
+        }
+        manager: TraCIScenarioManagerLaunchd {
+            parameters:
+                @display("p=734,378");
+        }
+        roadsCanvasVisualizer: RoadsCanvasVisualizer {
+            @display("p=954,378");
+        }
+        node[0]: Car {
+            @display("p=426,378");
+        }
+
+    connections allowunconnected:
 }
