@@ -112,6 +112,13 @@ void VehicularApp::setup() {
     // Sumo Vehicle Type
     sumoVType = traciVehicle->getVType();
 
+    // Change Icon
+    auto host = findHost();
+    cDisplayString& disp = host->getDisplayString();
+    disp.setTagArg("i", 0, "smart/node/mercedes,red");
+    disp.setTagArg("is", 0, "");
+
+
     // Configure output files
     configureOutput();
 

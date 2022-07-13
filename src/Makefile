@@ -43,6 +43,8 @@ OBJS = \
     $O/smart/decider/classifier/decisiontree/DecisionTree.o \
     $O/smart/decider/classifier/decisiontree/Leaf.o \
     $O/smart/decider/classifier/decisiontree/Question.o \
+    $O/smart/decider/classifier/decisiontree/test.o \
+    $O/smart/decider/classifier/decisiontree/test2.o \
     $O/smart/mac/VehicularMac1610_4.o \
     $O/veins_inet/VeinsInetApplicationBase.o \
     $O/veins_inet/VeinsInetManager.o \
