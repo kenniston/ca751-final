@@ -22,6 +22,7 @@
 // @date    28/06/2022
 // @version 1.0
 //
+#include <algorithm>
 #include "Knn.h"
 
 namespace knn {
@@ -47,7 +48,7 @@ namespace knn {
      *         index of predicted class.
      */
     tuple<string, int> Knn::classify(svector sample) {
-        pair<int, double> squaredDistances[sample.size()];
+        vector<pair<double, int>> squaredDistances(sample.size());
 
         for (int i = 0; i < data.size(); i++) {
             double sum = 0;
@@ -57,15 +58,17 @@ namespace knn {
                 double diff = v1 - v2;
                 sum += diff * diff;
             }
-            squaredDistances[i].first = i;
-            squaredDistances[i].second = sum;
+            squaredDistances[i].first = sum;
+            squaredDistances[i].second = i;
         }
+
+        std::sort(squaredDistances.begin(), squaredDistances.end());
 
         double result = -1;
         int idx = 0;
         for (int i = 0; i < this->K; i++) {
-            if (squaredDistances[i].second < result || result == -1) {
-                result = squaredDistances[i].second;
+            if (squaredDistances[i].first < result || result == -1) {
+                result = squaredDistances[i].first;
                 idx = i;
             }
         }
