@@ -43,7 +43,7 @@ namespace decisiontree {
      *
      * @param df Decision Tree training dataframe.
      */
-    void DecisionTree::initialize(vector<vector<string>> df, svector header, int classColumn)
+    void DecisionTree::initialize(dataframe df, svector header, int classColumn)
     {
         this->data = df;
         this->header = header;
