@@ -53,6 +53,7 @@ namespace knn {
         for (int i = 0; i < data.size(); i++) {
             double sum = 0;
             for (int j = 0; j < sample.size(); j++) {
+                if (j == this-->classColumn) continue;
                 double v1 = stod(sample[j]);
                 double v2 = stod(data[i][j]);
                 double diff = v1 - v2;
